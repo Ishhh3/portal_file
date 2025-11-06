@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Leaderboards - MSEUF</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <style>
+        :root {
+            --maroon: #800000;
+        }
+        
+        body {
+            overflow-x: hidden;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .sidebar {
+            background: linear-gradient(to bottom, #800000, #4d0000);
+            min-height: 100vh;
+            padding: 20px 0;
+            width: 250px;
+            position: fixed;
+            z-index: 1001;
+        }
+        
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar a:hover {
+            background-color: #a00000;
+            color: white;
+        }
+        
+        .sidebar a.active {
+            background-color: #a00000;
+        }
+        
+        .university-name {
+            font-size: 14px;
+            line-height: 1.3;
+            padding: 0 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .sidebar-logo {
+            display: block;
+            margin: 0 auto 15px;
+            max-width: 80px;
+            max-height: 80px;
+            border-radius: 50%;
+            background-color: white;
+            padding: 5px;
+        }
+        
+        .sidebar hr {
+            border-color: rgba(255,255,255,0.3);
+            margin: 15px 20px;
+        }
+        
+        .mobile-header {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to right, #800000, #a52a2a);
+            color: white;
+            padding: 15px 20px;
+            z-index: 999;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .mobile-header .header-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .mobile-header .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .mobile-header .header-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            flex-grow: 1;
+            text-align: center;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .card-body {
+            padding: 30px;
+        }
+
+        #leaderboardTable thead th {
+            background: linear-gradient(135deg, #800000 0%, #a52a2a 100%);
+            color: white;
+            border-color: #800000;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 15px 12px;
+        }
+        
+        #leaderboardTable tbody tr {
+            border-bottom: 1px solid #dee2e6;
+            transition: all 0.2s ease;
+        }
+        
+        #leaderboardTable tbody tr:hover {
+            background-color: rgba(128, 0, 0, 0.05);
+            transform: translateX(5px);
+        }
+        
+        #leaderboardTable tbody td {
+            padding: 15px 12px;
+            vertical-align: middle;
+        }
+        
+        #leaderboardTable tbody td:first-child {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--maroon);
+        }
+
+        .honor-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .university-scholar {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #000;
+            box-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+        }
+        
+        .college-scholar {
+            background: linear-gradient(135deg, #C0C0C0 0%, #808080 100%);
+            color: #000;
+            box-shadow: 0 2px 4px rgba(192, 192, 192, 0.3);
+        }
+        
+        .deans-lister {
+            background: linear-gradient(135deg, #CD7F32 0%, #B8860B 100%);
+            color: #fff;
+            box-shadow: 0 2px 4px rgba(205, 127, 50, 0.3);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        
+        .overlay.active {
+            display: block;
+        }
+
+        .section-title {
+            color: var(--maroon);
+            font-weight: bold;
+        }
+        
+        .text-maroon {
+            color: var(--maroon);
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-header {
+                display: block;
+            }
+            
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -250px;
+                width: 250px;
+                transition: left 0.3s;
+                z-index: 1001;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                margin-top: 60px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+    <div class="mobile-header">
+        <div class="header-content">
+            <button class="menu-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="header-title">Leaderboards</h1>
+        </div>
+    </div>
+
+    <nav class="sidebar" id="sidebar">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='white'/%3E%3Ctext x='50' y='45' font-family='Arial' font-size='16' font-weight='bold' fill='%23800000' text-anchor='middle' dy='.3em'%3EMSEUF%3C/text%3E%3Ctext x='50' y='62' font-family='Arial' font-size='8' fill='%23800000' text-anchor='middle'%3ECandelaria%3C/text%3E%3C/svg%3E" alt="MSEUF Candelaria Logo" class="sidebar-logo">
+        <div class="university-name">MANUEL S. ENVERGA UNIVERSITY FOUNDATION CANDELARIA INC.</div>
+        <hr>
+        <a href="/html/teacher.html" class="nav-link active"><i class="fas fa-tachometer-alt mr-2"></i> Dashboard</a>
+        <a href="/html/grademanagement.html" class="nav-link"><i class="fas fa-chart-line mr-2"></i> Grade Management</a>
+        <a href="/html/teacherannouncements.html"><i class="fas fa-bullhorn"></i> Announcements</a>
+        <a href="/html/leaderboards.html" class="nav-link"><i class="fas fa-trophy mr-2"></i> Leaderboards</a>
+        <a href="/html/teacherprofile.html" class="nav-link"><i class="fas fa-user mr-2"></i> Profile</a>
+        <a href="#" onclick="logout();"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
+    </nav>
+
+    <main class="main-content">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="mb-4 section-title">
+                    <i class="fas fa-trophy me-2"></i>Academic Leaderboards
+                </h2>
+
+                <div class="mb-4">
+                    <label for="leaderboardSearch" class="form-label">
+                        <i class="fas fa-search me-1"></i> Search
+                    </label>
+                    <input type="text" class="form-control" id="leaderboardSearch" placeholder="Search by Student ID or Name...">
+                </div>
+
+                <div class="filter-section mb-4">
+                    <div class="row g-3">
+                        <div class="col-md-4 col-12">
+                            <label for="subjectFilter" class="form-label">
+                                <i class="fas fa-book me-1"></i> Subject
+                            </label>
+                            <select class="form-select" id="subjectFilter">
+                                <option value="">All Subjects</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <label for="academicYearFilter" class="form-label">
+                                <i class="fas fa-calendar-alt me-1"></i> Academic Year
+                            </label>
+                            <select class="form-select" id="academicYearFilter">
+                                <option value="">All Years</option>
+                                <option value="2024-2025" selected>2024 - 2025</option>
+                                <option value="2023-2024">2023 - 2024</option>
+                                <option value="2022-2023">2022 - 2023</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <label for="departmentFilter" class="form-label">
+                                <i class="fas fa-building me-1"></i> Department
+                            </label>
+                            <select class="form-select" id="departmentFilter">
+                                <option value="">All Departments</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover" id="leaderboardTable">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Year Level</th>
+                                <th>GWA</th>
+                                <th>Academic Scholar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="7" class="text-center py-4">
+                                    <div class="spinner-border text-maroon" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/javaScript/leaderboard.js"></script>
+    <script>
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("active");
+            document.getElementById("overlay").classList.toggle("active");
+        }
+
+        function closeSidebar() {
+            document.getElementById("sidebar").classList.remove("active");
+            document.getElementById("overlay").classList.remove("active");
+        }
+
+        function logout() {
+            localStorage.removeItem("loggedInUser");
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+</html>

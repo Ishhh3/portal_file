@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Grades - MSEUF</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --maroon: #800000;
+            --maroon-dark: #4d0000;
+            --maroon-hover: #a00000;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .sidebar {
+            background: linear-gradient(to bottom, var(--maroon), var(--maroon-dark));
+            min-height: 100vh;
+            padding: 20px 0;
+            width: 250px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1001;
+        }
+        
+        .sidebar-logo {
+            display: block;
+            margin: 0 auto 15px;
+            max-width: 80px;
+            max-height: 80px;
+            border-radius: 50%;
+            background-color: white;
+            padding: 5px;
+        }
+        
+        .university-name {
+            font-size: 14px;
+            line-height: 1.3;
+            padding: 0 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .sidebar hr {
+            border-color: rgba(255,255,255,0.3);
+            margin: 15px 20px;
+        }
+        
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar a:hover {
+            background-color: var(--maroon-hover);
+        }
+        
+        .sidebar a.active {
+            background-color: var(--maroon-hover);
+            font-weight: bold;
+        }
+        
+        .sidebar a i {
+            margin-right: 10px;
+            width: 20px;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        
+        .grades-title {
+            color: var(--maroon);
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        
+        .filter-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .btn-reset {
+            background-color: #666;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        
+        .btn-reset:hover {
+            background-color: #444;
+            color: white;
+        }
+        
+        .grades-table-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            overflow-x: auto;
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table th {
+            background-color: var(--maroon);
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 15px 12px;
+        }
+        
+        .table tbody td {
+            padding: 15px 12px;
+            vertical-align: middle;
+        }
+        
+        .subject-code {
+            color: var(--maroon);
+            font-weight: 600;
+        }
+        
+        .grade-passed {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .grade-incomplete {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        #noResultsMessage {
+            display: none;
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+        
+        #noResultsMessage i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+        
+        .mobile-header {
+            display: none;
+            background-color: var(--maroon);
+            color: white;
+            padding: 15px 20px;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .mobile-header .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .mobile-header .header-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            flex-grow: 1;
+            text-align: center;
+        }
+        
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        
+        .overlay.active {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -250px;
+                transition: left 0.3s;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .mobile-header {
+                display: flex;
+            }
+            
+            body {
+                padding-top: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+    <div class="mobile-header">
+        <button class="menu-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="header-title">My Grades</div>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='white'/%3E%3Ctext x='50' y='45' font-family='Arial' font-size='16' font-weight='bold' fill='%23800000' text-anchor='middle' dy='.3em'%3EMSEUF%3C/text%3E%3Ctext x='50' y='62' font-family='Arial' font-size='8' fill='%23800000' text-anchor='middle'%3ECandelaria%3C/text%3E%3C/svg%3E" alt="Logo" class="sidebar-logo">
+        <div class="university-name">
+            MANUEL S. ENVERGA<br>
+            UNIVERSITY FOUNDATION<br>
+            CANDELARIA INC.
+        </div>
+        <hr>
+        <a href="stud.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="mygrades.html"><i class="fas fa-chart-line"></i> My Grades</a>
+        <a href="announcements.html"><i class="fas fa-bullhorn"></i> Announcements</a>
+        <a href="registration.html"><i class="fas fa-file-alt"></i> Registration Form</a>
+        <a href="studaccount.html"><i class="fas fa-user"></i> Profile</a>
+        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <div class="main-content">
+        <h2 class="grades-title">
+            <i class="fas fa-chart-line me-2"></i>My Grades
+        </h2>
+        
+        <div class="filter-container">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label for="yearFilter" class="form-label">Filter by Year</label>
+                    <select class="form-select" id="yearFilter">
+                        <option value="">All Years</option>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label for="semesterFilter" class="form-label">Filter by Semester</label>
+                    <select class="form-select" id="semesterFilter">
+                        <option value="">All Semesters</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-reset w-100" onclick="resetFilters()">
+                        <i class="fas fa-redo me-2"></i>Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="grades-table-container">
+            <table class="table table-hover" id="gradesTable">
+                <thead>
+                    <tr>
+                        <th>Subject Code</th>
+                        <th>Subject Name</th>
+                        <th>Midterm</th>
+                        <th>Finals</th>
+                        <th>GPA</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody id="gradesTableBody">
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-5">
+                            <i class="fas fa-spinner fa-spin fa-3x mb-3"></i>
+                            <p>Loading grades...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div id="noResultsMessage">
+                <i class="fas fa-inbox"></i>
+                <p>No grades found for the selected filters.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/javaScript/mygrades.js"></script>
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+    </script>
+</body>
+</html>

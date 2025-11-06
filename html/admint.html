@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Portal - Teachers</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <style>
+    :root {
+        --maroon: #800000;
+        --white: #ffffff;
+    }
+
+    body {
+        background-color: #f5f5f5;
+        font-family: Arial, sans-serif;
+    }
+
+    .main-content {
+        margin-left: 250px;
+        padding: 20px;
+        width: calc(100% - 250px);
+        transition: all 0.3s;
+    }
+
+    .content-section {
+        display: block;
+    }
+
+    .btn-maroon {
+        background-color: var(--maroon);
+        color: white;
+    }
+
+    .btn-maroon:hover {
+        background-color: #a52a2a;
+        color: white;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(128, 0, 0, 0.05);
+        cursor: pointer;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 10px !important;
+        overflow: hidden;
+    }
+
+    .card-header {
+        border-bottom: none;
+    }
+    
+    /* Mobile Header */
+    .mobile-header {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to right, #800000, #a52a2a);
+        color: white;
+        padding: 15px 20px;
+        z-index: 999;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .mobile-header .header-content {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    .mobile-header .menu-toggle {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .mobile-header .header-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0;
+        flex-grow: 1;
+        text-align: center;
+    }
+
+    .sidebar {
+        background: linear-gradient(to bottom, #800000, #4d0000);
+        min-height: 100vh;
+        padding: 20px 0;
+        width: 250px;
+        position: fixed;
+    }
+    .sidebar a {
+        display: block;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        transition: none;
+    }
+    .sidebar a i {
+        margin-right: 0.5rem;
+        width: 20px;
+        text-align: center;
+    }
+    .sidebar a:hover {
+        background-color: #a00000;
+        color: white !important;
+    }
+    .sidebar a.active {
+        background-color: #a00000;
+    }
+    .university-name {
+        font-size: 14px;
+        line-height: 1.3;
+        padding: 0 15px;
+        text-align: center;
+        margin-bottom: 15px;
+        color: white;
+    }
+    .sidebar-logo {
+        display: block;
+        margin: 0 auto 15px auto;
+        max-width: 80px;
+        max-height: 80px;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        border-radius: 50%;
+        background-color: white;
+        padding: 5px;
+    }
+
+    @media (max-width: 768px) {
+        .mobile-header {
+            display: block;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 250px;
+            z-index: 1000;
+            transition: 0.3s;
+        }
+        .sidebar.active {
+            left: 0;
+        }
+        .main-content {
+            margin-left: 0;
+            margin-top: 60px;
+            width: 100%;
+            padding: 20px;
+        }
+    }
+
+    .form-check-input:checked {
+        background-color: #800000;
+        border-color: #800000;
+    }
+    .form-check-input:focus {
+        box-shadow: 0 0 0 0.25rem rgba(128, 0, 0, 0.25);
+    }
+    
+    /* Teacher name link styling */
+    .teacher-name {
+        color: #0d6efd;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .teacher-name:hover {
+        text-decoration: underline;
+        color: #0a58ca;
+    }
+
+    .bg-maroon {
+        background-color: var(--maroon);
+    }
+    
+    /* Ensure table headers with bg-maroon have proper styling */
+    thead.bg-maroon {
+        background-color: var(--maroon) !important;
+    }
+    
+    thead.bg-maroon th {
+        background-color: var(--maroon) !important;
+        color: white !important;
+        border-color: var(--maroon) !important;
+    }
+
+    /* Teacher table header styling */
+    #teachersTable thead th {
+        background: linear-gradient(135deg, #800000 0%, #a52a2a 100%) !important;
+        color: white !important;
+        border-color: #800000 !important;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 12px 10px;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        border: none;
+    }
+    
+    #teachersTable thead th:first-child {
+        border-top-left-radius: 10px;
+    }
+    
+    #teachersTable thead th:last-child {
+        border-top-right-radius: 10px;
+    }
+    
+    #teachersTable tbody tr {
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    #teachersTable tbody tr:hover {
+        background-color: #fff5f5;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    #teachersTable tbody td {
+        padding: 12px 10px;
+        vertical-align: middle;
+        font-size: 0.9rem;
+    }
+    
+    /* Teacher Management table wrapper */
+    #teachers .table-responsive {
+        border-radius: 10px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        background: white;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Teacher Management search bar styling */
+    #teachers .form-label {
+        font-weight: 600;
+        color: #495057;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    #teachers .form-label i {
+        color: #800000;
+        font-size: 0.85rem;
+        margin-right: 0.3rem;
+    }
+    
+    #teachers #teacherSearch {
+        border: 1px solid #dee2e6;
+        padding: 0.625rem 0.875rem;
+        font-size: 0.95rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    #teachers #teacherSearch:focus {
+        border-color: #800000;
+        box-shadow: 0 0 0 0.2rem rgba(128, 0, 0, 0.15);
+    }
+
+    .filter-section {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .filter-section .form-label {
+        font-weight: 600;
+        color: #495057;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .filter-section .form-label i {
+        color: #800000;
+        font-size: 0.85rem;
+        margin-right: 0.3rem;
+    }
+    
+    .filter-section .form-select {
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        padding: 0.625rem 0.875rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+    
+    .filter-section .form-select:focus {
+        border-color: #800000;
+        box-shadow: 0 0 0 0.2rem rgba(128, 0, 0, 0.15);
+    }
+
+    @media (max-width: 768px) {
+        /* Teacher table mobile adjustments */
+        #teachersTable thead th {
+            font-size: 0.6rem;
+            padding: 6px 2px;
+            letter-spacing: 0.2px;
+        }
+        
+        /* Teacher Management search bar mobile adjustments */
+        #teachers .form-label {
+            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
+        }
+        
+        #teachers .form-label i {
+            font-size: 0.8rem;
+        }
+        
+        #teachers #teacherSearch {
+            font-size: 0.9rem;
+            padding: 0.5rem 0.75rem;
+        }
+
+        .filter-section {
+            padding: 15px;
+        }
+        
+        .filter-section .form-label {
+            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
+        }
+        
+        .filter-section .form-label i {
+            font-size: 0.8rem;
+        }
+        
+        .filter-section .form-select {
+            font-size: 0.9rem;
+            padding: 0.5rem 0.75rem;
+        }
+    }
+
+    </style>
+</head>
+<body>
+    <!-- Teacher Classes Modal -->
+    <div class="modal fade" id="teacherClassesModal" tabindex="-1" aria-labelledby="teacherClassesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-maroon text-white">
+                    <h5 class="modal-title" id="teacherClassesModalLabel">Classes Handled</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Class Code</th>
+                                    <th>Subject</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teacherClassesTableBody">
+                                <!-- Classes will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Class Students Modal -->
+    <div class="modal fade" id="classStudentsModal" tabindex="-1" aria-labelledby="classStudentsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-maroon text-white">
+                    <h5 class="modal-title" id="classStudentsModalLabel">Class Students</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Section Selector -->
+                    <div class="mb-3">
+                        <label for="sectionSelect" class="form-label fw-bold">Select Section:</label>
+                        <select class="form-select" id="sectionSelect">
+                            <option value="">-- Select Section --</option>
+                        </select>
+                        <div class="text-muted mt-2">
+                            <i class="bi bi-info-circle me-1"></i>
+                            <span>Select a section to view students</span>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Student ID</th>
+                                    <th>Student Name</th>
+                                    <th class="text-center">Midterm Grade</th>
+                                    <th class="text-center">Final Grade</th>
+                                    <th class="text-center">Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody id="classStudentsTableBody">
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">
+                                        <i class="bi bi-info-circle"></i> Select a section to view students
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Archive Teacher Modal -->
+    <div class="modal fade" id="archiveTeacherModal" tabindex="-1" aria-labelledby="archiveTeacherModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-maroon text-white">
+                    <h5 class="modal-title" id="archiveTeacherModalLabel"><i class="bi bi-archive me-2"></i>Archive Teacher</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to archive <strong id="archiveTeacherName"></strong>?
+                    <div class="alert alert-info mt-2">
+                        <small><i class="bi bi-info-circle"></i> Archived teachers can be viewed in the archive list.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-maroon" id="confirmArchiveBtn"><i class="bi bi-archive"></i> Archive Teacher</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <div class="header-content">
+            <button class="menu-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="header-title">Enverga University Candelaria</h1>
+        </div>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+        <img src="photo/mseuflogo.png" alt="MSEUF Candelaria Logo" class="sidebar-logo">
+        <div class="university-name">MANUEL S. ENVERGA UNIVERSITY FOUNDATION CANDELARIA INC.</div>
+        <hr />
+        <a href="/html/admin.html" ><i class="fas fa-tachometer-alt mr-2"></i> Dashboard</a>
+    <a href="/html/adminstudent.html" class="active"><i class="fas fa-users mr-2"></i> Students</a>
+    <a href="/html/admint.html" ><i class="fas fa-chalkboard-teacher mr-2"></i> Teachers</a>
+    <a href="/html/adminannouncement.html" ><i class="fas fa-bullhorn mr-2"></i> Announcements</a>
+    <a href="/html/adminleaderboard.html" ><i class="fas fa-trophy mr-2"></i> Leaderboards</a>
+    <a href="#" onclick="logout();"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Teachers Management Content -->
+        <div id="teachers">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="mb-3"><i class="bi bi-person-video3"></i> Teachers Management</h2>
+
+                    <!-- Search Bar -->
+                    <div class="mb-4">
+                        <label for="teacherSearch" class="form-label">
+                            <i class="fas fa-search"></i> Search
+                        </label>
+                        <input type="text" class="form-control" id="teacherSearch" placeholder="Search by Teacher ID or Name...">
+                    </div>
+
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="enableEncodingToggle">
+                            <label class="form-check-label" for="enableEncodingToggle">Enable Midterm Grade Encoding</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="enableFinalEncodingToggle">
+                            <label class="form-check-label" for="enableFinalEncodingToggle">Enable Final Grade Encoding</label>
+                        </div>
+                    </div>
+
+                    <!-- Teacher Filter Section -->
+                    <div class="filter-section mb-4">
+                        <div class="row g-3">
+                            <div class="col-md-6 col-12">
+                                <label for="departmentFilter" class="form-label">
+                                    <i class="fas fa-building me-1"></i> Filter by Department/Status
+                                </label>
+                                <select class="form-select" id="departmentFilter">
+                                    <option value="">All Active Teachers</option>
+                                    <option value="Mathematics">Mathematics</option>
+                                    <option value="Computer Science">Computer Science</option>
+                                    <option value="English Literature">English Literature</option>
+                                    <option value="Physics">Physics</option>
+                                    <option value="Chemistry">Chemistry</option>
+                                    <option value="archived">Archived Teachers</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 col-12 d-flex align-items-end">
+                                <button class="btn btn-secondary w-100" id="resetTeacherFilters">
+                                    <i class="fas fa-redo me-1"></i> Reset Filters
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="teachersTable">
+                            <thead class="bg-maroon text-white">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                    <th>Contact</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-teacher-id="T001" data-encoding-enabled="false">
+                                    <td>T001</td>
+                                    <td><a href="#" class="teacher-name" onclick="showTeacherClasses('T001', 'Dr. Sarah Johnson')">Dr. Sarah Johnson</a></td>
+                                    <td>Mathematics</td>
+                                    <td>sarah.johnson@school.edu</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger encoding-btn me-1" onclick="toggleEncoding(this)" title="Encoding Disabled">
+                                            <i class="bi bi-lock-fill"></i> Disabled
+                                        </button>
+                                        <button class="btn btn-sm btn-secondary"><i class="bi bi-archive"></i> Archive</button>
+                                    </td>
+                                </tr>
+                                <tr data-teacher-id="T002" data-encoding-enabled="false">
+                                    <td>T002</td>
+                                    <td><a href="#" class="teacher-name" onclick="showTeacherClasses('T002', 'Prof. Michael Chen')">Prof. Michael Chen</a></td>
+                                    <td>Computer Science</td>
+                                    <td>michael.chen@school.edu</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger encoding-btn me-1" onclick="toggleEncoding(this)" title="Encoding Disabled">
+                                            <i class="bi bi-lock-fill"></i> Disabled
+                                        </button>
+                                        <button class="btn btn-sm btn-secondary"><i class="bi bi-archive"></i> Archive</button>
+                                    </td>
+                                </tr>
+                                <tr data-teacher-id="T003" data-encoding-enabled="false">
+                                    <td>T003</td>
+                                    <td><a href="#" class="teacher-name" onclick="showTeacherClasses('T003', 'Ms. Emily Rodriguez')">Ms. Emily Rodriguez</a></td>
+                                    <td>English Literature</td>
+                                    <td>emily.rodriguez@school.edu</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger encoding-btn me-1" onclick="toggleEncoding(this)" title="Encoding Disabled">
+                                            <i class="bi bi-lock-fill"></i> Disabled
+                                        </button>
+                                        <button class="btn btn-sm btn-secondary"><i class="bi bi-archive"></i> Archive</button>
+                                    </td>
+                                </tr>
+                                <tr data-teacher-id="T004" data-encoding-enabled="false">
+                                    <td>T004</td>
+                                    <td><a href="#" class="teacher-name" onclick="showTeacherClasses('T004', 'Dr. Robert Wilson')">Dr. Robert Wilson</a></td>
+                                    <td>Physics</td>
+                                    <td>robert.wilson@school.edu</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger encoding-btn me-1" onclick="toggleEncoding(this)" title="Encoding Disabled">
+                                            <i class="bi bi-lock-fill"></i> Disabled
+                                        </button>
+                                        <button class="btn btn-sm btn-secondary"><i class="bi bi-archive"></i> Archive</button>
+                                    </td>
+                                </tr>
+                                <tr data-teacher-id="T005" data-encoding-enabled="false">
+                                    <td>T005</td>
+                                    <td><a href="#" class="teacher-name" onclick="showTeacherClasses('T005', 'Ms. Lisa Thompson')">Ms. Lisa Thompson</a></td>
+                                    <td>Chemistry</td>
+                                    <td>lisa.thompson@school.edu</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger encoding-btn me-1" onclick="toggleEncoding(this)" title="Encoding Disabled">
+                                            <i class="bi bi-lock-fill"></i> Disabled
+                                        </button>
+                                        <button class="btn btn-sm btn-secondary"><i class="bi bi-archive"></i> Archive</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Teacher Classes Modal -->
+    <div class="modal fade" id="teacherClassesModal" tabindex="-1" aria-labelledby="teacherClassesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-maroon text-white">
+                    <h5 class="modal-title" id="teacherClassesModalLabel">
+                        <span id="teacherNameDisplay"></span> - Classes
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Class Code</th>
+                                <th>Subject</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teacherClassesTableBody">
+                            <tr>
+                                <td colspan="3" class="text-center">
+                                    <div class="spinner-border text-maroon" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Students List Modal -->
+    <div class="modal fade" id="studentsListModal" tabindex="-1" aria-labelledby="studentsListModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-maroon text-white">
+                    <h5 class="modal-title" id="studentsListModalLabel">
+                        <i class="bi bi-people"></i> <span id="studentsModalTitle"></span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3" id="sectionSelectContainer" style="display: none;">
+                        <label for="studentsSectionSelect" class="form-label">Select Section:</label>
+                        <select class="form-select" id="studentsSectionSelect" style="width: auto;">
+                            <option value="">Loading sections...</option>
+                        </select>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Student Name</th>
+                                    <th>Midterm Grade</th>
+                                    <th>Final Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsListTableBody">
+                                <tr>
+                                    <td colspan="4" class="text-center">Loading students...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/javaScript/admint.js"></script>
+</body>
+</html>

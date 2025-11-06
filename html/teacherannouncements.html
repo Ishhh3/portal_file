@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements - MSEUF</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --maroon: #800000;
+            --maroon-dark: #4d0000;
+            --maroon-hover: #a00000;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .sidebar {
+            background: linear-gradient(to bottom, var(--maroon), var(--maroon-dark));
+            min-height: 100vh;
+            padding: 20px 0;
+            width: 250px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1001;
+        }
+        
+        .sidebar-logo {
+            display: block;
+            margin: 0 auto 15px;
+            max-width: 80px;
+            max-height: 80px;
+            border-radius: 50%;
+            background-color: white;
+            padding: 5px;
+        }
+        
+        .university-name {
+            font-size: 14px;
+            line-height: 1.3;
+            padding: 0 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .sidebar hr {
+            border-color: rgba(255,255,255,0.3);
+            margin: 15px 20px;
+        }
+        
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar a:hover {
+            background-color: var(--maroon-hover);
+        }
+        
+        .sidebar a.active {
+            background-color: var(--maroon-hover);
+            font-weight: bold;
+        }
+        
+        .sidebar a i {
+            margin-right: 10px;
+            width: 20px;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        
+        .announcements-title {
+            color: var(--maroon);
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        
+        .filter-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .btn-reset {
+            background-color: #666;
+            color: white;
+            border: none;
+        }
+        
+        .btn-reset:hover {
+            background-color: #444;
+            color: white;
+        }
+        
+        .announcements-list-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .announcement-item {
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        
+        .announcement-item:hover {
+            background-color: #f8f9fa;
+            border-left-color: var(--maroon);
+        }
+        
+        .announcement-preview {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        
+        .text-maroon {
+            color: var(--maroon);
+        }
+        
+        .mobile-header {
+            display: none;
+            background-color: var(--maroon);
+            color: white;
+            padding: 15px 20px;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .mobile-header .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .mobile-header .header-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            flex-grow: 1;
+            text-align: center;
+        }
+        
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        
+        .overlay.active {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -250px;
+                transition: left 0.3s;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .mobile-header {
+                display: flex;
+            }
+            
+            body {
+                padding-top: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+    <div class="mobile-header">
+        <button class="menu-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="header-title">Announcements</div>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='white'/%3E%3Ctext x='50' y='45' font-family='Arial' font-size='16' font-weight='bold' fill='%23800000' text-anchor='middle' dy='.3em'%3EMSEUF%3C/text%3E%3Ctext x='50' y='62' font-family='Arial' font-size='8' fill='%23800000' text-anchor='middle'%3ECandelaria%3C/text%3E%3C/svg%3E" alt="Logo" class="sidebar-logo">
+        <div class="university-name">
+            MANUEL S. ENVERGA<br>
+            UNIVERSITY FOUNDATION<br>
+            CANDELARIA INC.
+        </div>
+        <hr>
+        <a href="/html/teacher.html" class="nav-link active"><i class="fas fa-tachometer-alt mr-2"></i> Dashboard</a>
+        <a href="/html/grademanagement.html" class="nav-link"><i class="fas fa-chart-line mr-2"></i> Grade Management</a>
+        <a href="/html/teacherannouncements.html"><i class="fas fa-bullhorn"></i> Announcements</a>
+        <a href="/html/leaderboards.html" class="nav-link"><i class="fas fa-trophy mr-2"></i> Leaderboards</a>
+        <a href="/html/teacherprofile.html" class="nav-link"><i class="fas fa-user mr-2"></i> Profile</a>
+        <a href="#" onclick="logout();"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
+    </div>
+
+    <div class="main-content">
+        <h2 class="announcements-title">
+            <i class="fas fa-bullhorn"></i> Announcements
+        </h2>
+        
+        <div class="filter-container">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Filter by Category</label>
+                    <select class="form-select" id="categoryFilter" onchange="filterAnnouncements()">
+                        <option value="">All Categories</option>
+                        <option value="General">General</option>
+                        <option value="Academic">Academic</option>
+                        <option value="Event">Event</option>
+                        <option value="Holiday">Holiday</option>
+                    </select>
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <button class="btn btn-reset w-100" onclick="resetFilters()">
+                        <i class="fas fa-redo me-2"></i>Reset Filter
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="announcements-list-container">
+            <div class="list-group" id="announcementsContainer">
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-spinner fa-spin fa-3x mb-3"></i>
+                    <p>Loading announcements...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="announcementModalLabel">Announcement</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="announcementModalBody">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/javaScript/teacherannouncements.js"></script>
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+    </script>
+</body>
+</html>

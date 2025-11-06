@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Portal - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <style>
+        :root {
+            --maroon: #800000;
+            --maroon-hover: #a52a2a;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .sidebar {
+            background: linear-gradient(to bottom, #800000, #4d0000);
+            min-height: 100vh;
+            padding: 20px 0;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1001;
+        }
+
+        .sidebar-logo {
+            display: block;
+            margin: 0 auto 15px;
+            max-width: 80px;
+            max-height: 80px;
+            border-radius: 50%;
+            background-color: white;
+            padding: 5px;
+        }
+
+        .university-name {
+            font-size: 14px;
+            line-height: 1.3;
+            padding: 0 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .sidebar hr {
+            border-color: rgba(255,255,255,0.3);
+            margin: 15px 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar a:hover {
+            background-color: var(--maroon-hover);
+            color: white;
+        }
+
+        .sidebar a.active {
+            background-color: var(--maroon-hover);
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .dashboard-title {
+            color: var(--maroon);
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .stat-card {
+            transition: transform 0.2s;
+            height: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .text-maroon {
+            color: var(--maroon);
+        }
+
+        .form-check-input:checked {
+            background-color: var(--maroon);
+            border-color: var(--maroon);
+        }
+
+        .form-check-input:focus {
+            box-shadow: 0 0 0 0.25rem rgba(128, 0, 0, 0.25);
+        }
+
+        .mobile-header {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to right, #800000, var(--maroon-hover));
+            color: white;
+            padding: 15px 20px;
+            z-index: 999;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .mobile-header .header-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mobile-header .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .mobile-header .header-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-header {
+                display: block;
+            }
+
+            .sidebar {
+                left: -250px;
+                transition: left 0.3s;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+                margin-top: 60px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+    <div class="mobile-header">
+        <div class="header-content">
+            <button class="menu-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="header-title">Admin Dashboard</h1>
+        </div>
+    </div>
+
+    <nav class="sidebar" id="sidebar">
+        <img src="photo/mseuflogo.png" alt="MSEUF Candelaria Logo" class="sidebar-logo">
+        <div class="university-name">MANUEL S. ENVERGA UNIVERSITY FOUNDATION CANDELARIA INC.</div>
+        <hr>
+        <a href="/html/admin.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="/html/adminstudent.html"><i class="fas fa-users"></i> Students</a>
+        <a href="/html/admint.html"><i class="fas fa-chalkboard-teacher"></i> Teachers</a>
+        <a href="/html/adminannouncement.html"><i class="fas fa-bullhorn"></i> Announcements</a>
+        <a href="/html/adminleaderboard.html"><i class="fas fa-trophy"></i> Leaderboards</a>
+        <a href="#" onclick="logout();"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </nav>
+
+    <div class="main-content">
+        <div id="dashboard-content">
+            <h2 class="dashboard-title"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
+
+            <div class="dashboard-card">
+                <div class="d-flex align-items-center">
+                    <div class="me-4">
+                        <i class="fas fa-user-circle fa-5x text-secondary"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-1 fw-bold">ADMINISTRATOR</h5>
+                        <p class="mb-1">Admin ID: AXX-0001</p>
+                        <p class="mb-0">Position: Admin</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="card h-100 text-center stat-card">
+                        <div class="card-body">
+                            <i class="fas fa-user-graduate fa-2x text-maroon mb-2"></i>
+                            <h6 class="fw-bold text-maroon">Students</h6>
+                            <h2 class="text-dark">1840</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="card h-100 text-center stat-card">
+                        <div class="card-body">
+                            <i class="fas fa-chalkboard-teacher fa-2x text-maroon mb-2"></i>
+                            <h6 class="fw-bold text-maroon">Teachers</h6>
+                            <h2 class="text-dark">197</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="card h-100 text-center stat-card">
+                        <div class="card-body">
+                            <i class="fas fa-bullhorn fa-2x text-maroon mb-2"></i>
+                            <h6 class="fw-bold text-maroon">Announcements</h6>
+                            <h2 class="text-dark">12</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="card h-100 text-center stat-card">
+                        <div class="card-body">
+                            <i class="fas fa-clipboard-check fa-2x text-maroon mb-2"></i>
+                            <h6 class="fw-bold text-maroon mb-3">Grade Encoding</h6>
+                            <div class="d-flex justify-content-around align-items-center">
+                                <div class="text-center">
+                                    <label class="form-label mb-1" style="font-size: 0.85rem;">Midterm</label>
+                                    <div class="form-check form-switch d-flex justify-content-center">
+                                        <input class="form-check-input" type="checkbox" id="midtermEncodingSwitch" style="transform: scale(1.3);">
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <label class="form-label mb-1" style="font-size: 0.85rem;">Final</label>
+                                    <div class="form-check form-switch d-flex justify-content-center">
+                                        <input class="form-check-input" type="checkbox" id="finalEncodingSwitch" style="transform: scale(1.3);">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/javaScript/admin.js"></script>
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        function logout() {
+            localStorage.removeItem("loggedInUser");
+            window.location.href = "login.html";
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const midtermSwitch = document.getElementById('midtermEncodingSwitch');
+            const finalSwitch = document.getElementById('finalEncodingSwitch');
+            
+            if (midtermSwitch) {
+                midtermSwitch.addEventListener('change', function() {
+                    const status = this.checked ? 'enabled' : 'disabled';
+                    alert(`Midterm encoding ${status} for all teachers`);
+                });
+            }
+            
+            if (finalSwitch) {
+                finalSwitch.addEventListener('change', function() {
+                    const status = this.checked ? 'enabled' : 'disabled';
+                    alert(`Final encoding ${status} for all teachers`);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
