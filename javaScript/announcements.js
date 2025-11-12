@@ -20,6 +20,7 @@ function loadAnnouncements() {
             isScholar = data.isScholar;
             allAnnouncements = data.announcements;
             displayAnnouncements(allAnnouncements);
+            setupEventListeners();
         })
         .catch((error) => {
             console.log("Error fetching announcements:", error);
@@ -46,7 +47,7 @@ function displayAnnouncements(announcements) {
         const preview = announcement.content.substring(0, 150) + '...';
         
         return `
-            <div class="list-group-item announcement-item" data-id="${announcement.id}" data-category="${announcement.category}" onclick="viewAnnouncement(this)">
+            <div class="list-group-item announcement-item" data-id="${announcement.id}" data-category="${announcement.category}">
                 <div class="d-flex w-100 justify-content-between align-items-start">
                     <div class="flex-grow-1">
                         <h5 class="mb-2">
@@ -58,7 +59,7 @@ function displayAnnouncements(announcements) {
                         </p>
                         <div class="d-flex justify-content-between align-items-center">
                             <small class="text-muted">
-                                <i class="fas fa-calendar me-1"></i>${dateFormatted}
+                                <i class="fas fa-clock me-1"></i>${dateFormatted}
                             </small>
                             <small class="text-maroon fw-bold">
                                 <i class="fas fa-arrow-right me-1"></i>Click to read more
@@ -72,14 +73,23 @@ function displayAnnouncements(announcements) {
             </div>
         `;
     }).join('');
+
+    // Add click event listeners to all announcement items
+    const announcementItems = container.querySelectorAll('.announcement-item');
+    announcementItems.forEach(item => {
+        item.addEventListener('click', function() {
+            viewAnnouncement(this);
+        });
+    });
 }
 
 function getCategoryBadge(category) {
     const badges = {
         'Academic': '<span class="badge bg-primary ms-2">Academic</span>',
         'General': '<span class="badge bg-secondary ms-2">General</span>',
-        'Event': '<span class="badge bg-info ms-2">Event</span>',
-        'Holiday': '<span class="badge bg-success ms-2">Holiday</span>'
+        'Event': '<span class="badge bg-warning text-dark ms-2">Event</span>',
+        'Holiday': '<span class="badge bg-success ms-2">Holiday</span>',
+        'Important': '<span class="badge bg-danger ms-2">Important</span>'
     };
     return badges[category] || '<span class="badge bg-secondary ms-2">' + category + '</span>';
 }
@@ -114,6 +124,20 @@ function displayError() {
     `;
 }
 
+function setupEventListeners() {
+    // Category filter
+    const categoryFilter = document.querySelector("#categoryFilter");
+    if (categoryFilter) {
+        categoryFilter.addEventListener('change', filterAnnouncements);
+    }
+
+    // Reset filter button
+    const resetFilter = document.querySelector("#resetAnnouncementFilter");
+    if (resetFilter) {
+        resetFilter.addEventListener('click', resetFilters);
+    }
+}
+
 function filterAnnouncements() {
     const categoryFilter = document.querySelector("#categoryFilter").value;
     
@@ -133,13 +157,24 @@ function resetFilters() {
 
 function viewAnnouncement(element) {
     const fullContent = element.querySelector('.announcement-full-content').innerHTML;
-    const title = element.querySelector('h5').textContent.trim();
+    const titleElement = element.querySelector('h5');
     
-    const modal = new bootstrap.Modal(document.getElementById('announcementModal'));
-    document.getElementById('announcementModalLabel').textContent = title;
-    document.getElementById('announcementModalBody').innerHTML = `
-        <div style="white-space: pre-line;">${fullContent}</div>
-    `;
+    // Extract only the title text without the category badge
+    const title = titleElement.childNodes[0].textContent.trim(); // This gets only the text content before the badge
+    
+    const categoryBadge = element.querySelector('.badge');
+    const category = categoryBadge.textContent.trim();
+    const datePosted = element.querySelector('small').textContent.trim();
+
+    // Set modal content for the new modal structure
+    document.getElementById('modalAnnouncementTitle').textContent = title; // Only the title, no category
+    document.getElementById('modalAnnouncementCategory').textContent = category;
+    document.getElementById('modalAnnouncementCategory').className = categoryBadge.className;
+    document.getElementById('modalAnnouncementDate').innerHTML = '<i class="fas fa-clock"></i> ' + datePosted;
+    document.getElementById('modalAnnouncementContent').innerHTML = `<div style="white-space: pre-line;">${fullContent}</div>`;
+
+    // Show the new modal
+    const modal = new bootstrap.Modal(document.getElementById('viewAnnouncementModal'));
     modal.show();
 }
 

@@ -59,7 +59,6 @@ function displayGrades(grades) {
                 <td>${grade.subject_name}</td>
                 <td>${midterm}</td>
                 <td>${finals}</td>
-                <td>${finals}</td>
                 <td class="${remarkClass}">${remark}</td>
             </tr>
         `;

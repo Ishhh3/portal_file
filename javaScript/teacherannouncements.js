@@ -2,27 +2,95 @@ window.addEventListener("load", () => {
     loadAnnouncements();
 });
 
-const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+// Safe localStorage parsing with error handling
+function getLoggedInUser() {
+    try {
+        const userData = localStorage.getItem("loggedInUser");
+        console.log("Raw user data from localStorage:", userData);
+        
+        if (!userData) {
+            console.error("No user data found in localStorage");
+            return null;
+        }
+        
+        const user = JSON.parse(userData);
+        console.log("Parsed user object:", user);
+        return user;
+        
+    } catch (error) {
+        console.error("Error parsing user data from localStorage:", error);
+        return null;
+    }
+}
+
+const loggedInUser = getLoggedInUser();
 let allAnnouncements = [];
-let isScholar = false;
 
 function loadAnnouncements() {
-    if (!loggedInUser || !loggedInUser.student_id) {
+    // Check if user is properly logged in
+    if (!loggedInUser) {
+        console.error("User not logged in - redirecting to login");
         window.location.href = "login.html";
         return;
     }
 
-    const url = `http://localhost:3000/api/announcements/${loggedInUser.student_id}`;
+    // Check if user has teacher_id (for teachers)
+    if (!loggedInUser.teacher_id) {
+        console.error("User is not a teacher or missing teacher_id:", loggedInUser);
+        
+        // If it's a student, redirect to student announcements
+        if (loggedInUser.student_id) {
+            window.location.href = "announcements.html";
+            return;
+        }
+        
+        window.location.href = "login.html";
+        return;
+    }
+
+    console.log("Loading announcements for teacher:", loggedInUser.teacher_id);
+
+    // Use teacher-specific endpoint
+    const url = `http://localhost:3000/api/teacher/announcements/${loggedInUser.teacher_id}`;
 
     fetch(url, { mode: "cors" })
-        .then((response) => response.json())
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then((data) => {
-            isScholar = data.isScholar;
-            allAnnouncements = data.announcements;
+            console.log("Announcements data received:", data);
+            allAnnouncements = data.announcements || data || [];
             displayAnnouncements(allAnnouncements);
         })
         .catch((error) => {
-            console.log("Error fetching announcements:", error);
+            console.log("Error fetching teacher announcements:", error);
+            // Try fallback to general announcements
+            loadGeneralAnnouncements();
+        });
+}
+
+function loadGeneralAnnouncements() {
+    console.log("Trying general announcements endpoint...");
+    
+    const url = `http://localhost:3000/api/announcements`;
+
+    fetch(url, { mode: "cors" })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then((data) => {
+            console.log("General announcements data received:", data);
+            allAnnouncements = data.announcements || data || [];
+            displayAnnouncements(allAnnouncements);
+        })
+        .catch((error) => {
+            console.log("Error fetching general announcements:", error);
             displayError();
         });
 }
@@ -30,7 +98,7 @@ function loadAnnouncements() {
 function displayAnnouncements(announcements) {
     const container = document.querySelector("#announcementsContainer");
     
-    if (announcements.length === 0) {
+    if (!announcements || announcements.length === 0) {
         container.innerHTML = `
             <div class="text-center text-muted py-5">
                 <i class="fas fa-info-circle fa-3x mb-3"></i>
@@ -42,15 +110,15 @@ function displayAnnouncements(announcements) {
 
     container.innerHTML = announcements.map(announcement => {
         const badge = getCategoryBadge(announcement.category);
-        const dateFormatted = formatDate(announcement.date_published);
-        const preview = announcement.content.substring(0, 150) + '...';
+        const dateFormatted = formatDate(announcement.date_published || announcement.created_at);
+        const preview = announcement.content ? announcement.content.substring(0, 150) + '...' : 'No content available';
         
         return `
             <div class="list-group-item announcement-item" data-id="${announcement.id}" data-category="${announcement.category}" onclick="viewAnnouncement(this)">
                 <div class="d-flex w-100 justify-content-between align-items-start">
                     <div class="flex-grow-1">
                         <h5 class="mb-2">
-                            ${announcement.title}
+                            ${announcement.title || 'Untitled Announcement'}
                             ${badge}
                         </h5>
                         <p class="mb-2 text-muted announcement-preview">
@@ -67,7 +135,7 @@ function displayAnnouncements(announcements) {
                     </div>
                 </div>
                 <div class="announcement-full-content" style="display: none;">
-                    ${announcement.content}
+                    ${announcement.content || 'No content available'}
                 </div>
             </div>
         `;
@@ -78,14 +146,19 @@ function getCategoryBadge(category) {
     const badges = {
         'Academic': '<span class="badge bg-primary ms-2">Academic</span>',
         'General': '<span class="badge bg-secondary ms-2">General</span>',
-        'Event': '<span class="badge bg-info ms-2">Event</span>',
-        'Holiday': '<span class="badge bg-success ms-2">Holiday</span>'
+        'Event': '<span class="badge bg-warning text-dark ms-2">Event</span>',
+        'Holiday': '<span class="badge bg-success ms-2">Holiday</span>',
+        'Important': '<span class="badge bg-danger ms-2">Important</span>'
     };
     return badges[category] || '<span class="badge bg-secondary ms-2">' + category + '</span>';
 }
 
 function formatDate(dateString) {
+    if (!dateString) return 'Unknown date';
+    
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Invalid date';
+    
     const now = new Date();
     const diffTime = Math.abs(now - date);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -110,6 +183,9 @@ function displayError() {
         <div class="text-center text-danger py-5">
             <i class="fas fa-exclamation-circle fa-3x mb-3"></i>
             <p>Error loading announcements. Please try again later.</p>
+            <button class="btn btn-primary mt-2" onclick="loadAnnouncements()">
+                <i class="fas fa-redo me-1"></i>Try Again
+            </button>
         </div>
     `;
 }
@@ -133,13 +209,26 @@ function resetFilters() {
 
 function viewAnnouncement(element) {
     const fullContent = element.querySelector('.announcement-full-content').innerHTML;
-    const title = element.querySelector('h5').textContent.trim();
+    const titleElement = element.querySelector('h5');
     
-    const modal = new bootstrap.Modal(document.getElementById('announcementModal'));
-    document.getElementById('announcementModalLabel').textContent = title;
-    document.getElementById('announcementModalBody').innerHTML = `
-        <div style="white-space: pre-line;">${fullContent}</div>
-    `;
+    // Extract only the title text without the category badge
+    const title = titleElement.childNodes[0].textContent.trim();
+    
+    // Get category badge and date information
+    const categoryBadge = element.querySelector('.badge');
+    const category = categoryBadge ? categoryBadge.textContent.trim() : 'General';
+    const dateElement = element.querySelector('small');
+    const datePosted = dateElement ? dateElement.textContent.trim() : 'Unknown date';
+
+    // Set modal content for the new modal structure
+    document.getElementById('modalAnnouncementTitle').textContent = title;
+    document.getElementById('modalAnnouncementCategory').textContent = category;
+    document.getElementById('modalAnnouncementCategory').className = categoryBadge ? categoryBadge.className : 'badge bg-secondary';
+    document.getElementById('modalAnnouncementDate').innerHTML = '<i class="fas fa-clock"></i> ' + datePosted;
+    document.getElementById('modalAnnouncementContent').innerHTML = `<div style="white-space: pre-line;">${fullContent}</div>`;
+
+    // Show the new modal
+    const modal = new bootstrap.Modal(document.getElementById('viewAnnouncementModal'));
     modal.show();
 }
 

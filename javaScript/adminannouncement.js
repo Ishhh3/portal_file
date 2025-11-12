@@ -29,17 +29,17 @@ async function loadAnnouncements() {
         listGroup.innerHTML = announcements.map(announcement => `
             <div class="list-group-item" data-id="${announcement.id}">
                 <div class="d-flex justify-content-between align-items-start">
-                    <div class="flex-grow-1">
+                    <div class="flex-grow-1" style="min-width: 0;">
                         <h5 class="mb-2">
                             ${announcement.title} 
                             <span class="badge ${getCategoryBadgeClass(announcement.category)} ms-2">
                                 ${announcement.category}
                             </span>
                         </h5>
-                        <p class="mb-2">${announcement.content}</p>
+                        <p class="mb-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${announcement.content}</p>
                         <small class="text-muted">Published on ${formatDate(announcement.date_published)}</small>
                     </div>
-                    <div class="ms-3">
+                    <div class="ms-3" style="flex-shrink: 0;">
                         <button class="btn btn-sm btn-outline-primary me-1" onclick="editAnnouncement(${announcement.id})" title="Edit">
                             <i class="fas fa-edit"></i>
                         </button>

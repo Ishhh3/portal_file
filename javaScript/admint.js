@@ -6,6 +6,7 @@ let currentTeacherId = null;
 let currentTeacherName = null;
 let currentSubjectId = null;
 let currentSubjectName = null;
+let currentSubjectCode = null;
 let currentSections = [];
 
 window.addEventListener("load", () => {
@@ -47,6 +48,12 @@ function initializeEventListeners() {
     const bulkFinalToggle = document.getElementById('enableFinalEncodingToggle');
     if (bulkFinalToggle) {
         bulkFinalToggle.addEventListener('change', handleBulkFinalEncodingToggle);
+    }
+
+    // Add event listener for section selection
+    const sectionSelect = document.getElementById('sectionSelect');
+    if (sectionSelect) {
+        sectionSelect.addEventListener('change', handleSectionChange);
     }
 }
 
@@ -593,21 +600,32 @@ async function loadTeacherClasses(teacherId) {
 async function viewClassStudents(subjectId, subjectName, subjectCode) {
     currentSubjectId = subjectId;
     currentSubjectName = subjectName;
+    currentSubjectCode = subjectCode;
     
+    // Close the teacher classes modal first
+    const teacherClassesModal = bootstrap.Modal.getInstance(document.getElementById('teacherClassesModal'));
+    if (teacherClassesModal) {
+        teacherClassesModal.hide();
+    }
+    
+    // Update the students modal title
     document.getElementById('studentsModalTitle').textContent = `${subjectCode} - ${subjectName}`;
     
+    // Show the students modal
     const studentsModal = new bootstrap.Modal(document.getElementById('studentsListModal'));
     studentsModal.show();
     
+    // Load sections for this subject
     await loadSubjectSections(subjectId);
 }
 
 async function loadSubjectSections(subjectId) {
-    const sectionContainer = document.getElementById('sectionSelectContainer');
-    const sectionSelect = document.getElementById('studentsSectionSelect');
-    const tbody = document.getElementById('studentsListTableBody');
+    const sectionSelect = document.getElementById('sectionSelect');
+    const tbody = document.getElementById('classStudentsTableBody');
     
-    tbody.innerHTML = '<tr><td colspan="4" class="text-center"><div class="spinner-border text-maroon spinner-border-sm"></div> Loading...</td></tr>';
+    // Reset and show loading state
+    sectionSelect.innerHTML = '<option value="">Loading sections...</option>';
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center"><div class="spinner-border text-maroon spinner-border-sm"></div> Loading sections...</td></tr>';
     
     try {
         const response = await fetch(`http://localhost:3000/admin/teacher-sections/${currentTeacherId}/${subjectId}`, {
@@ -619,48 +637,44 @@ async function loadSubjectSections(subjectId) {
         }
         
         currentSections = await response.json();
-        console.log('Sections:', currentSections);
+        console.log('Sections loaded:', currentSections);
         
         if (currentSections.length === 0) {
-            sectionContainer.style.display = 'none';
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No sections available</td></tr>';
+            sectionSelect.innerHTML = '<option value="">No sections available</option>';
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No sections available for this subject</td></tr>';
             return;
         }
         
-        if (currentSections.length === 1) {
-            sectionContainer.style.display = 'none';
-            await loadSectionStudents(currentTeacherId, subjectId, currentSections[0].sectionCode);
-        } else {
-            sectionContainer.style.display = 'block';
-            sectionSelect.innerHTML = '<option value="">Select a section</option>' + 
-                currentSections.map(section => 
-                    `<option value="${section.sectionCode}">${section.sectionCode} (${section.student_count} students)</option>`
-                ).join('');
-            
-            sectionSelect.onchange = function() {
-                if (this.value) {
-                    loadSectionStudents(currentTeacherId, subjectId, this.value);
-                } else {
-                    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Select a section to view students</td></tr>';
-                }
-            };
-            
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Select a section to view students</td></tr>';
-        }
+        // Populate section dropdown
+        sectionSelect.innerHTML = '<option value="">Select a section...</option>' + 
+            currentSections.map(section => 
+                `<option value="${section.sectionCode}">Section ${section.sectionCode} (${section.student_count || 0} students)</option>`
+            ).join('');
+        
+        // Reset student table
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Select a section to view students</td></tr>';
         
     } catch (error) {
         console.error('Error loading sections:', error);
-        sectionContainer.style.display = 'none';
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Error loading sections</td></tr>';
+        sectionSelect.innerHTML = '<option value="">Error loading sections</option>';
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading sections</td></tr>';
     }
 }
 
-async function loadSectionStudents(teacherId, subjectId, sectionCode) {
-    const tbody = document.getElementById('studentsListTableBody');
-    tbody.innerHTML = '<tr><td colspan="4" class="text-center"><div class="spinner-border spinner-border-sm text-maroon"></div> Loading students...</td></tr>';
+// Handle section change to load students
+async function handleSectionChange() {
+    const sectionCode = this.value;
+    const tbody = document.getElementById('classStudentsTableBody');
+    
+    if (!sectionCode) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Select a section to view students</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center"><div class="spinner-border text-maroon spinner-border-sm"></div> Loading students...</td></tr>';
     
     try {
-        const response = await fetch(`http://localhost:3000/admin/class-students/${teacherId}/${subjectId}/${sectionCode}`, {
+        const response = await fetch(`http://localhost:3000/admin/class-students/${currentTeacherId}/${currentSubjectId}/${sectionCode}`, {
             mode: 'cors'
         });
         
@@ -669,24 +683,67 @@ async function loadSectionStudents(teacherId, subjectId, sectionCode) {
         }
         
         const students = await response.json();
-        console.log('Students:', students);
+        console.log('Students loaded:', students);
         
         if (students.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No students enrolled in this section</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No students enrolled in this section</td></tr>';
             return;
         }
         
-        tbody.innerHTML = students.map((student, index) => `
-            <tr>
-                <td>${index + 1}</td>
-                <td>${student.student_name}</td>
-                <td>${student.midterm_grade !== null ? student.midterm_grade : '<span class="text-muted">-</span>'}</td>
-                <td>${student.final_grade !== null ? student.final_grade : '<span class="text-muted">-</span>'}</td>
-            </tr>
-        `).join('');
+        // Render students with grades and remarks
+        tbody.innerHTML = students.map((student, index) => {
+            const midtermGrade = student.midterm_grade !== null ? student.midterm_grade : '-';
+            
+            // Handle final grade display - show INC for 6.00
+            let finalGrade;
+            if (student.final_grade === null) {
+                finalGrade = '-';
+            } else if (student.final_grade === 6 || student.final_grade === 6.00 || Math.abs(student.final_grade - 6.00) < 0.01) {
+                finalGrade = 'INC';
+            } else if (student.final_grade === 0 || student.final_grade === 0.00) {
+                finalGrade = '0.00';
+            } else {
+                finalGrade = student.final_grade;
+            }
+            
+            // Calculate remarks based on your grading system
+            let remarks = '-';
+            let remarksClass = 'text-muted';
+
+            if (student.final_grade !== null) {
+                const finalGradeNum = parseFloat(student.final_grade);
+                
+                if (finalGradeNum >= 1.00 && finalGradeNum <= 3.00) {
+                    remarks = 'Passed';
+                    remarksClass = 'text-success';
+                } else if (finalGradeNum === 0 || finalGradeNum === 0.00) {
+                    remarks = 'Dropped';
+                    remarksClass = 'text-warning';
+                } else if (finalGradeNum === 5.00) {
+                    remarks = 'Failed';
+                    remarksClass = 'text-danger';
+                } else if (finalGradeNum === 6.00 || Math.abs(finalGradeNum - 6.00) < 0.01) {
+                    remarks = 'Incomplete';
+                    remarksClass = 'text-primary';
+                } else {
+                    remarks = 'Invalid Grade';
+                    remarksClass = 'text-danger';
+                }
+            }
+            
+            return `
+                <tr>
+                    <td>${student.student_id || `S${(index + 1).toString().padStart(3, '0')}`}</td>
+                    <td>${student.student_name || 'Unknown Student'}</td>
+                    <td class="text-center">${midtermGrade}</td>
+                    <td class="text-center">${finalGrade}</td>
+                    <td class="text-center ${remarksClass} fw-bold">${remarks}</td>
+                </tr>
+            `;
+        }).join('');
         
     } catch (error) {
         console.error('Error loading students:', error);
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Error loading students</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading students</td></tr>';
     }
 }

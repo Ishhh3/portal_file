@@ -175,15 +175,34 @@ function displayGrades(grades) {
     grades.forEach((grade) => {
         const row = document.createElement("tr");
         
-        const midterm = grade.midterm_grade || 0;
-        const final = grade.final_grade || 0;
+        // Convert to numbers and handle string values
+        const midterm = grade.midterm_grade != null ? Number(grade.midterm_grade) : 0;
+        const final = grade.final_grade != null ? Number(grade.final_grade) : 0;
+        
         const remarks = calculateRemarks(midterm, final);
+        
+        // Format midterm grade with 2 decimal places
+        let displayMidterm = midterm;
+        if (midterm !== 0 && midterm !== 'Dropped') {
+            displayMidterm = midterm.toFixed(2);
+        }
+        
+        // Display logic for final grade
+        let displayFinal;
+        if (final === 6 || Math.abs(final - 6.00) < 0.01) {
+            displayFinal = 'INC';
+        } else if (final === 0) {
+            displayFinal = 'Dropped';
+        } else {
+            // Format regular grades with 2 decimal places
+            displayFinal = final.toFixed(2);
+        }
         
         row.innerHTML = `
             <td class="text-danger">${grade.subject_code}</td>
             <td>${grade.subject_name}</td>
-            <td>${midterm}</td>
-            <td>${final}</td>
+            <td>${displayMidterm}</td>
+            <td>${displayFinal}</td>
             <td>${remarks}</td>
         `;
         
@@ -192,16 +211,24 @@ function displayGrades(grades) {
 }
 
 function calculateRemarks(midterm, final) {
-    if (final === 0 || final === null) {
-        return "Drop";
+    // Use strict comparison for 6 and approximate for 6.00 due to floating point
+    if (final === 0 || final === 0.00) {
+        return "Dropped";
     }
-    if (final === 5) {
-        return "INC";
+    
+    if (final === 6 || Math.abs(final - 6.00) < 0.01) {
+        return "Incomplete";
     }
+    
     if (final >= 1.00 && final <= 3.00) {
         return "Passed";
     }
-    return "Failed";
+    
+    if (final > 3.00 && final < 6.00) {
+        return "Failed";
+    }
+    
+    return "N/A";
 }
 
 function populateYearFilter(grades) {

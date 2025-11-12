@@ -29,7 +29,6 @@ let currentSubjectUnit = 0;
 
 function loadTeacherClasses() {
     if (!loggedInUser || !loggedInUser.teacher_id) {
-        console.log("No logged-in teacher found");
         showError("Please log in to view your classes");
         return;
     }
@@ -77,8 +76,8 @@ function displayClassCards(classes) {
                 subject_code: cls.subject_code,
                 subject_name: cls.subject_name,
                 total_students: 0,
-                status: cls.status,
-                sections: []
+                sections: [],
+                school_year: cls.school_year
             };
         }
         groupedClasses[key].total_students += parseInt(cls.student_count) || 0;
@@ -87,21 +86,23 @@ function displayClassCards(classes) {
 
     Object.values(groupedClasses).forEach(classData => {
         const card = `
-            <div class="col-lg-4 col-md-6 col-12">
-                <div class="class-card" data-year="2024-2025">
-                    <div class="class-card-header">
-                        <span class="student-badge">
-                            <i class="fas fa-users"></i> ${classData.total_students} Students
-                        </span>
-                    </div>
-                    <h3 class="class-title">${classData.subject_code} - ${classData.subject_name}</h3>
-                    <div class="class-schedule">
-                        <span class="schedule-text">
-                            <i class="fas fa-layer-group"></i> ${classData.sections.length} Section(s)
-                        </span>
-                        <button class="view-btn" onclick="showClassDetail(${classData.subject_id}, '${classData.subject_code} - ${classData.subject_name}', ${classData.total_students})">
-                            View <i class="fas fa-arrow-right"></i>
-                        </button>
+            <div class="col-md-4 col-sm-6 mb-4">
+                <div class="subject-card card h-100" data-year="${classData.school_year}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="student-count-badge">
+                                <i class="fas fa-users me-1"></i> ${classData.total_students} Students
+                            </span>
+                        </div>
+                        <h4 class="card-title mb-3">${classData.subject_code} - ${classData.subject_name}</h4>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="text-muted small">
+                                <i class="fas fa-layer-group me-1"></i> ${classData.sections.length} Section(s)
+                            </span>
+                            <button class="btn btn-sm btn-outline-primary view-class-btn" onclick="showClassDetail(${classData.subject_id}, '${classData.subject_code} - ${classData.subject_name}', ${classData.total_students})">
+                                <i class="fas fa-arrow-right"></i> View
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -109,6 +110,16 @@ function displayClassCards(classes) {
         
         container.innerHTML += card;
     });
+}
+
+function setActiveFilter(year) {
+    const dropdownItems = document.querySelectorAll('#schoolYearFilterDropdown + .dropdown-menu .dropdown-item');
+    dropdownItems.forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    event.target.classList.add('active');
+    filterByYear(year);
 }
 
 function showClassDetail(subjectId, subjectName, studentCount) {
@@ -124,9 +135,7 @@ function showClassDetail(subjectId, subjectName, studentCount) {
     document.getElementById('class-title').textContent = subjectName;
     document.getElementById('student-count').textContent = studentCount;
     
-    // Fetch and display subject unit
     loadSubjectUnit(subjectId);
-    
     loadSections(subjectId);
     
     document.getElementById('searchInput').value = '';
@@ -163,7 +172,6 @@ function loadSubjectUnit(subjectId) {
 
 function loadSections(subjectId) {
     if (!loggedInUser || !loggedInUser.teacher_id) {
-        console.log("No logged-in teacher found");
         return;
     }
 
@@ -212,8 +220,6 @@ function populateSections(sections) {
 
 function onSectionChange() {
     const sectionFilter = document.getElementById('sectionFilter');
-    const selectedOption = sectionFilter.options[sectionFilter.selectedIndex];
-    const yearLevel = selectedOption.getAttribute('data-year');
     const schoolYearDisplay = document.getElementById('schoolYearDisplay');
     const searchInput = document.getElementById('searchInput');
     const noSectionMessage = document.getElementById('noSectionMessage');
@@ -238,7 +244,6 @@ function onSectionChange() {
 
 function loadSectionGrades(subjectId, sectionCode) {
     if (!loggedInUser || !loggedInUser.teacher_id) {
-        console.log("No logged-in teacher found");
         return;
     }
 
@@ -255,9 +260,11 @@ function loadSectionGrades(subjectId, sectionCode) {
         .then((data) => {
             const { students, encode, final_encode } = data;
             studentGrades = students;
+            
             if (students && students.length > 0 && students[0].semester) {
                 currentSemester = students[0].semester;
             }
+            
             displayGradeTable(students, encode, final_encode);
         })
         .catch((error) => {
@@ -290,21 +297,35 @@ function displayGradeTable(students, encode, final_encode) {
     
     students.forEach(student => {
         const midtermGrade = student.midterm_grade || '';
-        const finalGrade = student.final_grade || '';
+        const finalGrade = student.final_grade;
         
+        let selectedValue = '';
         let remarksText = 'Incomplete';
         let remarksClass = 'status-incomplete';
         
-        if (finalGrade) {
-            if (finalGrade === 'INC') {
+        if (finalGrade !== null && finalGrade !== undefined && finalGrade !== '') {
+            const finalGradeStr = finalGrade.toString();
+            
+            if (finalGradeStr === '0' || finalGradeStr === '0.00' || finalGradeStr === '0.0') {
+                selectedValue = '0';
+                remarksText = 'Dropped';
+                remarksClass = 'status-drop';
+            } else if (finalGradeStr === '6.00' || finalGradeStr === '6' || finalGradeStr === 'INC') {
+                selectedValue = '6.00';
                 remarksText = 'Incomplete';
                 remarksClass = 'status-incomplete';
-            } else if (parseFloat(finalGrade) >= 5.00 || finalGrade === '0') {
+            } else if (parseFloat(finalGradeStr) >= 5.00) {
+                selectedValue = parseFloat(finalGradeStr).toFixed(2);
                 remarksText = 'Failed';
                 remarksClass = 'status-failed';
-            } else {
+            } else if (!isNaN(parseFloat(finalGradeStr))) {
+                selectedValue = parseFloat(finalGradeStr).toFixed(2);
                 remarksText = 'Passed';
                 remarksClass = 'status-passed';
+            } else {
+                selectedValue = finalGradeStr;
+                remarksText = 'Incomplete';
+                remarksClass = 'status-incomplete';
             }
         }
         
@@ -326,18 +347,18 @@ function displayGradeTable(students, encode, final_encode) {
                 <td>
                     <select class="form-select final-grade" onchange="updateRemarks(this)" ${canEditFinal ? '' : 'disabled'} style="${canEditFinal ? '' : 'background-color: #e9ecef; cursor: not-allowed;'}">
                         <option value="">--</option>
-                        <option value="1.00" ${finalGrade === '1.00' ? 'selected' : ''}>1.00</option>
-                        <option value="1.25" ${finalGrade === '1.25' ? 'selected' : ''}>1.25</option>
-                        <option value="1.50" ${finalGrade === '1.50' ? 'selected' : ''}>1.50</option>
-                        <option value="1.75" ${finalGrade === '1.75' ? 'selected' : ''}>1.75</option>
-                        <option value="2.00" ${finalGrade === '2.00' ? 'selected' : ''}>2.00</option>
-                        <option value="2.25" ${finalGrade === '2.25' ? 'selected' : ''}>2.25</option>
-                        <option value="2.50" ${finalGrade === '2.50' ? 'selected' : ''}>2.50</option>
-                        <option value="2.75" ${finalGrade === '2.75' ? 'selected' : ''}>2.75</option>
-                        <option value="3.00" ${finalGrade === '3.00' ? 'selected' : ''}>3.00</option>
-                        <option value="5.00" ${finalGrade === '5.00' ? 'selected' : ''}>5.00</option>
-                        <option value="0" ${finalGrade === '0' ? 'selected' : ''}>0</option>
-                        <option value="INC" ${finalGrade === 'INC' ? 'selected' : ''}>INC</option>
+                        <option value="1.00" ${selectedValue === '1.00' ? 'selected' : ''}>1.00</option>
+                        <option value="1.25" ${selectedValue === '1.25' ? 'selected' : ''}>1.25</option>
+                        <option value="1.50" ${selectedValue === '1.50' ? 'selected' : ''}>1.50</option>
+                        <option value="1.75" ${selectedValue === '1.75' ? 'selected' : ''}>1.75</option>
+                        <option value="2.00" ${selectedValue === '2.00' ? 'selected' : ''}>2.00</option>
+                        <option value="2.25" ${selectedValue === '2.25' ? 'selected' : ''}>2.25</option>
+                        <option value="2.50" ${selectedValue === '2.50' ? 'selected' : ''}>2.50</option>
+                        <option value="2.75" ${selectedValue === '2.75' ? 'selected' : ''}>2.75</option>
+                        <option value="3.00" ${selectedValue === '3.00' ? 'selected' : ''}>3.00</option>
+                        <option value="5.00" ${selectedValue === '5.00' ? 'selected' : ''}>5.00</option>
+                        <option value="6.00" ${selectedValue === '6.00' ? 'selected' : ''}>INC</option>
+                        <option value="0" ${selectedValue === '0' ? 'selected' : ''}>0</option>
                     </select>
                 </td>
                 <td class="remarks-cell ${remarksClass}">${remarksText}</td>
@@ -364,12 +385,15 @@ function updateRemarks(selectElement) {
     const remarksCell = row.querySelector('.remarks-cell');
     const gradeValue = selectElement.value;
 
-    remarksCell.classList.remove('status-passed', 'status-failed', 'status-incomplete');
+    remarksCell.classList.remove('status-passed', 'status-failed', 'status-incomplete', 'status-drop');
 
-    if (gradeValue === '' || gradeValue === 'INC') {
+    if (gradeValue === '' || gradeValue === '6.00') {
         remarksCell.textContent = 'Incomplete';
         remarksCell.classList.add('status-incomplete');
-    } else if (parseFloat(gradeValue) >= 5.00 || gradeValue === '0') {
+    } else if (gradeValue === '0') {
+        remarksCell.textContent = 'Dropped';
+        remarksCell.classList.add('status-drop');
+    } else if (parseFloat(gradeValue) >= 5.00) {
         remarksCell.textContent = 'Failed';
         remarksCell.classList.add('status-failed');
     } else {
@@ -390,19 +414,27 @@ function submitGrades() {
 
     rows.forEach(row => {
         const studentId = row.getAttribute('data-student-id');
-        const gradeId = row.getAttribute('data-grade-id');
         const midterm = row.querySelector('.midterm-grade-input').value;
         const final = row.querySelector('.final-grade').value;
 
         if (!midterm || midterm === "" || !final || final === "") {
             hasEmpty = true;
         } else {
+            let finalGradeValue;
+            if (final === '6.00') {
+                finalGradeValue = 6.00;
+            } else if (final === '0') {
+                finalGradeValue = 0;
+            } else {
+                finalGradeValue = parseFloat(final);
+            }
+
             gradesToSubmit.push({
                 studentUser_id: parseInt(studentId),
                 subject_id: currentSubjectId,
                 teacher_id: loggedInUser.teacher_id,
                 midterm_grade: parseFloat(midterm),
-                final_grade: final === 'INC' ? 'INC' : parseFloat(final),
+                final_grade: finalGradeValue,
                 academic_year: '2024-2025',
                 semester: '1st'
             });
@@ -426,7 +458,9 @@ function submitGrades() {
     .then(data => {
         if (data.success) {
             alert(`Grades submitted successfully! ${data.successCount} grade(s) updated.`);
-            loadSectionGrades(currentSubjectId, currentSectionCode);
+            setTimeout(() => {
+                loadSectionGrades(currentSubjectId, currentSectionCode);
+            }, 1000);
         } else {
             alert(`Some grades failed to update. ${data.successCount} grade(s) were successful.`);
         }
@@ -466,7 +500,9 @@ function exportGrades() {
         const studentId = row.querySelector('.student-id-cell').textContent;
         const studentName = row.querySelector('.student-name-cell').textContent;
         const midterm = row.querySelector('.midterm-grade-input').value || '--';
-        const final = row.querySelector('.final-grade').value || '--';
+        const finalSelect = row.querySelector('.final-grade');
+        const finalValue = finalSelect.value;
+        const final = finalValue === '6.00' ? 'INC' : (finalValue || '--');
         const remarks = row.querySelector('.remarks-cell').textContent;
         
         const student = studentGrades.find(s => s.student_id === studentId);
@@ -520,15 +556,35 @@ function backToClasses() {
 }
 
 function filterByYear(year) {
-    const cards = document.querySelectorAll('.class-card');
+    const cards = document.querySelectorAll('.subject-card');
+    const container = document.getElementById('classCardsContainer');
+    let visibleCount = 0;
+    
+    const existingNoResults = container.querySelector('.no-results-message');
+    if (existingNoResults) {
+        existingNoResults.remove();
+    }
+    
     cards.forEach(card => {
         const cardYear = card.getAttribute('data-year');
+        
         if (year === 'all' || cardYear === year) {
             card.parentElement.style.display = '';
+            visibleCount++;
         } else {
             card.parentElement.style.display = 'none';
         }
     });
+    
+    if (visibleCount === 0) {
+        const noResults = document.createElement('div');
+        noResults.className = 'col-12 text-center py-5 no-results-message';
+        noResults.innerHTML = `
+            <i class="fas fa-book fa-3x text-muted mb-3"></i>
+            <p class="text-muted">No classes found for the selected school year.</p>
+        `;
+        container.appendChild(noResults);
+    }
 }
 
 function filterStudents() {
