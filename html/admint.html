@@ -8,375 +8,579 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <style>
-    :root {
-        --maroon: #800000;
-        --white: #ffffff;
-    }
+:root {
+    --maroon: #800000;
+    --white: #ffffff;
+}
 
-    body {
-        background-color: #f5f5f5;
-        font-family: Arial, sans-serif;
-    }
+body {
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+}
 
-    .main-content {
-        margin-left: 250px;
-        padding: 20px;
-        width: calc(100% - 250px);
-        transition: all 0.3s;
-    }
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+    transition: all 0.3s;
+}
 
-    .content-section {
+.content-section {
+    display: block;
+}
+
+.btn-maroon {
+    background-color: var(--maroon);
+    color: white;
+}
+
+.btn-maroon:hover {
+    background-color: #a52a2a;
+    color: white;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(128, 0, 0, 0.05);
+    cursor: pointer;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px !important;
+    overflow: hidden;
+}
+
+.card-header {
+    border-bottom: none;
+}
+
+/* Mobile Header */
+.mobile-header {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to right, #800000, #a52a2a);
+    color: white;
+    padding: 15px 20px;
+    z-index: 999;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.mobile-header .header-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.mobile-header .menu-toggle {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.mobile-header .header-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.sidebar {
+    background: linear-gradient(to bottom, #800000, #4d0000);
+    min-height: 100vh;
+    padding: 20px 0;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+    font-family: Arial, sans-serif;
+}
+
+.sidebar-logo {
+    display: block;
+    margin: 0 auto 15px;
+    max-width: 80px;
+    max-height: 80px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 50%;
+    background-color: white;
+    padding: 5px;
+}
+
+.university-name {
+    font-size: 14px;
+    line-height: 1.3;
+    padding: 0 20px;
+    text-align: center;
+    margin-bottom: 15px;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-weight: normal;
+}
+
+.sidebar hr {
+    border-color: rgba(255,255,255,0.3);
+    margin: 15px 20px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    padding: 12px 20px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.sidebar a i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.sidebar a:hover {
+    background-color: #a00000;
+    color: white;
+}
+
+.sidebar a.active {
+    background-color: #a00000;
+}
+
+/* Overlay for mobile sidebar */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.overlay.active {
+    display: block;
+}
+
+.form-check-input:checked {
+    background-color: #800000;
+    border-color: #800000;
+}
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(128, 0, 0, 0.25);
+}
+
+/* Teacher name link styling */
+.teacher-name {
+    color: #0d6efd;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.teacher-name:hover {
+    text-decoration: underline;
+    color: #0a58ca;
+}
+
+.bg-maroon {
+    background-color: var(--maroon);
+}
+
+/* Ensure table headers with bg-maroon have proper styling */
+thead.bg-maroon {
+    background-color: var(--maroon) !important;
+}
+
+thead.bg-maroon th {
+    background-color: var(--maroon) !important;
+    color: white !important;
+    border-color: var(--maroon) !important;
+}
+
+/* Teacher table header styling */
+#teachersTable thead th {
+    background: linear-gradient(135deg, #800000 0%, #a52a2a 100%) !important;
+    color: white !important;
+    border-color: #800000 !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 10px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    border: none;
+}
+
+#teachersTable thead th:first-child {
+    border-top-left-radius: 10px;
+}
+
+#teachersTable thead th:last-child {
+    border-top-right-radius: 10px;
+}
+
+#teachersTable tbody tr {
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+#teachersTable tbody tr:hover {
+    background-color: #fff5f5;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+#teachersTable tbody td {
+    padding: 12px 10px;
+    vertical-align: middle;
+    font-size: 0.9rem;
+}
+
+/* Teacher Management table wrapper */
+#teachers .table-responsive {
+    border-radius: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    background: white;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Teacher Management search bar styling */
+#teachers .form-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+#teachers .form-label i {
+    color: #800000;
+    font-size: 0.85rem;
+    margin-right: 0.3rem;
+}
+
+#teachers #teacherSearch {
+    border: 1px solid #dee2e6;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+#teachers #teacherSearch:focus {
+    border-color: #800000;
+    box-shadow: 0 0 0 0.2rem rgba(128, 0, 0, 0.15);
+}
+
+.filter-section {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.filter-section .form-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.filter-section .form-label i {
+    color: #800000;
+    font-size: 0.85rem;
+    margin-right: 0.3rem;
+}
+
+.filter-section .form-select {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.filter-section .form-select:focus {
+    border-color: #800000;
+    box-shadow: 0 0 0 0.2rem rgba(128, 0, 0, 0.15);
+}
+
+/* UNIFORM MODAL SIZING - FIXED */
+.modal-dialog {
+    max-width: 900px;
+    margin: 1.75rem auto;
+}
+
+/* Ensure modals don't exceed sidebar boundaries */
+.modal {
+    z-index: 1060;
+}
+
+.modal-backdrop {
+    z-index: 1050;
+}
+
+/* Responsive modal adjustments */
+@media (min-width: 1200px) {
+    .modal-dialog {
+        max-width: calc(100% - 280px);
+        margin-left: 270px;
+    }
+}
+
+@media (max-width: 1199.98px) {
+    .modal-dialog {
+        max-width: 95%;
+        margin: 1.75rem auto;
+    }
+}
+
+/* Specific modal content adjustments */
+.modal-body {
+    max-height: 65vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+
+.modal-body .table-responsive {
+    max-height: 45vh;
+    overflow-y: auto;
+}
+
+/* Modal header styling */
+.modal-header.bg-maroon {
+    background: linear-gradient(135deg, #800000 0%, #a52a2a 100%) !important;
+    color: white !important;
+    border-bottom: none;
+    padding: 1.2rem 1.5rem;
+}
+
+.modal-header.bg-maroon .btn-close {
+    filter: invert(1);
+    opacity: 0.8;
+}
+
+.modal-header.bg-maroon .btn-close:hover {
+    opacity: 1;
+}
+
+/* Modal footer styling */
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+    padding: 1.2rem 1.5rem;
+}
+
+/* Section selector styling in students modal */
+#sectionSelect {
+    max-width: 400px;
+}
+
+/* Students table styling in modal */
+#classStudentsTableBody tr td {
+    vertical-align: middle;
+}
+
+#classStudentsTableBody .text-success {
+    font-weight: 600;
+}
+
+#classStudentsTableBody .text-danger {
+    font-weight: 600;
+}
+
+/* Ensure both modals have the same table styling */
+#teacherClassesTableBody tr td {
+    vertical-align: middle;
+}
+
+/* Consistent button styling in both modals */
+.modal .btn-maroon {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .mobile-header {
         display: block;
     }
-
-    .btn-maroon {
-        background-color: var(--maroon);
-        color: white;
-    }
-
-    .btn-maroon:hover {
-        background-color: #a52a2a;
-        color: white;
-    }
-
-    .table-hover tbody tr:hover {
-        background-color: rgba(128, 0, 0, 0.05);
-        cursor: pointer;
-    }
-
-    .card {
-        border: none;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border-radius: 10px !important;
-        overflow: hidden;
-    }
-
-    .card-header {
-        border-bottom: none;
-    }
-    
-    /* Mobile Header */
-    .mobile-header {
-        display: none;
+    .sidebar {
         position: fixed;
         top: 0;
-        left: 0;
-        right: 0;
-        background: linear-gradient(to right, #800000, #a52a2a);
-        color: white;
-        padding: 15px 20px;
-        z-index: 999;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .mobile-header .header-content {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-    .mobile-header .menu-toggle {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.5rem;
-        cursor: pointer;
-        padding: 5px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .mobile-header .header-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin: 0;
-        flex-grow: 1;
-        text-align: center;
-    }
-
-    .sidebar {
-        background: linear-gradient(to bottom, #800000, #4d0000);
-        min-height: 100vh;
-        padding: 20px 0;
+        left: -250px;
         width: 250px;
-        position: fixed;
+        z-index: 1000;
+        transition: 0.3s;
     }
-    .sidebar a {
-        display: block;
-        color: white;
-        padding: 10px 20px;
-        text-decoration: none;
-        transition: none;
+    .sidebar.active {
+        left: 0;
     }
-    .sidebar a i {
-        margin-right: 0.5rem;
-        width: 20px;
-        text-align: center;
-    }
-    .sidebar a:hover {
-        background-color: #a00000;
-        color: white !important;
-    }
-    .sidebar a.active {
-        background-color: #a00000;
-    }
-    .university-name {
-        font-size: 14px;
-        line-height: 1.3;
-        padding: 0 15px;
-        text-align: center;
-        margin-bottom: 15px;
-        color: white;
-    }
-    .sidebar-logo {
-        display: block;
-        margin: 0 auto 15px auto;
-        max-width: 80px;
-        max-height: 80px;
-        width: auto;
-        height: auto;
-        object-fit: contain;
-        border-radius: 50%;
-        background-color: white;
-        padding: 5px;
-    }
-
-    @media (max-width: 768px) {
-        .mobile-header {
-            display: block;
-        }
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -100%;
-            width: 250px;
-            z-index: 1000;
-            transition: 0.3s;
-        }
-        .sidebar.active {
-            left: 0;
-        }
-        .main-content {
-            margin-left: 0;
-            margin-top: 60px;
-            width: 100%;
-            padding: 20px;
-        }
-    }
-
-    .form-check-input:checked {
-        background-color: #800000;
-        border-color: #800000;
-    }
-    .form-check-input:focus {
-        box-shadow: 0 0 0 0.25rem rgba(128, 0, 0, 0.25);
+    .main-content {
+        margin-left: 0;
+        margin-top: 60px;
+        width: 100%;
+        padding: 20px;
     }
     
-    /* Teacher name link styling */
-    .teacher-name {
-        color: #0d6efd;
-        cursor: pointer;
-        text-decoration: none;
-        font-weight: 500;
+    body {
+        padding-top: 60px;
     }
     
-    .teacher-name:hover {
-        text-decoration: underline;
-        color: #0a58ca;
-    }
-
-    .bg-maroon {
-        background-color: var(--maroon);
-    }
-    
-    /* Ensure table headers with bg-maroon have proper styling */
-    thead.bg-maroon {
-        background-color: var(--maroon) !important;
-    }
-    
-    thead.bg-maroon th {
-        background-color: var(--maroon) !important;
-        color: white !important;
-        border-color: var(--maroon) !important;
-    }
-
-    /* Teacher table header styling */
+    /* Teacher table mobile adjustments */
     #teachersTable thead th {
-        background: linear-gradient(135deg, #800000 0%, #a52a2a 100%) !important;
-        color: white !important;
-        border-color: #800000 !important;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 12px 10px;
-        font-size: 0.85rem;
-        white-space: nowrap;
-        border: none;
+        font-size: 0.6rem;
+        padding: 6px 2px;
+        letter-spacing: 0.2px;
     }
     
-    #teachersTable thead th:first-child {
-        border-top-left-radius: 10px;
-    }
-    
-    #teachersTable thead th:last-child {
-        border-top-right-radius: 10px;
-    }
-    
-    #teachersTable tbody tr {
-        transition: all 0.2s ease;
-        border-bottom: 1px solid #f0f0f0;
-    }
-    
-    #teachersTable tbody tr:hover {
-        background-color: #fff5f5;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    
-    #teachersTable tbody td {
-        padding: 12px 10px;
-        vertical-align: middle;
-        font-size: 0.9rem;
-    }
-    
-    /* Teacher Management table wrapper */
-    #teachers .table-responsive {
-        border-radius: 10px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        background: white;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    /* Teacher Management search bar styling */
+    /* Teacher Management search bar mobile adjustments */
     #teachers .form-label {
-        font-weight: 600;
-        color: #495057;
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+        margin-bottom: 0.4rem;
     }
     
     #teachers .form-label i {
-        color: #800000;
-        font-size: 0.85rem;
-        margin-right: 0.3rem;
+        font-size: 0.8rem;
     }
     
     #teachers #teacherSearch {
-        border: 1px solid #dee2e6;
-        padding: 0.625rem 0.875rem;
-        font-size: 0.95rem;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-    
-    #teachers #teacherSearch:focus {
-        border-color: #800000;
-        box-shadow: 0 0 0 0.2rem rgba(128, 0, 0, 0.15);
+        font-size: 0.9rem;
+        padding: 0.5rem 0.75rem;
     }
 
+    /* Specific styling for search label */
+.search-label {
+    font-weight: 700;
+    color: #495057;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.search-label i {
+    color: var(--maroon);
+    font-size: 0.85rem;
+    margin-right: 0.3rem;
+}
+
     .filter-section {
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-        border: 1px solid rgba(0,0,0,0.05);
+        padding: 15px;
     }
     
     .filter-section .form-label {
-        font-weight: 600;
-        color: #495057;
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+        margin-bottom: 0.4rem;
     }
     
     .filter-section .form-label i {
-        color: #800000;
-        font-size: 0.85rem;
-        margin-right: 0.3rem;
+        font-size: 0.8rem;
     }
     
     .filter-section .form-select {
-        border-radius: 8px;
-        border: 1px solid #dee2e6;
-        padding: 0.625rem 0.875rem;
-        font-size: 0.95rem;
-        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    /* Mobile modal adjustments */
+    .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100% - 1rem);
     }
     
-    .filter-section .form-select:focus {
-        border-color: #800000;
-        box-shadow: 0 0 0 0.2rem rgba(128, 0, 0, 0.15);
+    .modal-body {
+        max-height: 60vh;
+        padding: 1rem;
     }
-
-    @media (max-width: 768px) {
-        /* Teacher table mobile adjustments */
-        #teachersTable thead th {
-            font-size: 0.6rem;
-            padding: 6px 2px;
-            letter-spacing: 0.2px;
-        }
-        
-        /* Teacher Management search bar mobile adjustments */
-        #teachers .form-label {
-            font-size: 0.85rem;
-            margin-bottom: 0.4rem;
-        }
-        
-        #teachers .form-label i {
-            font-size: 0.8rem;
-        }
-        
-        #teachers #teacherSearch {
-            font-size: 0.9rem;
-            padding: 0.5rem 0.75rem;
-        }
-
-        .filter-section {
-            padding: 15px;
-        }
-        
-        .filter-section .form-label {
-            font-size: 0.85rem;
-            margin-bottom: 0.4rem;
-        }
-        
-        .filter-section .form-label i {
-            font-size: 0.8rem;
-        }
-        
-        .filter-section .form-select {
-            font-size: 0.9rem;
-            padding: 0.5rem 0.75rem;
-        }
+    
+    .modal-body .table-responsive {
+        max-height: 40vh;
     }
+    
+    #sectionSelect {
+        max-width: 100%;
+    }
+    
+    .modal-header.bg-maroon {
+        padding: 1rem 1.2rem;
+    }
+    
+    .modal-footer {
+        padding: 1rem 1.2rem;
+    }
+}
 
-    </style>
+/* Ensure consistent table styling in both modals */
+.modal table {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.modal table th {
+    font-weight: 600;
+    background-color: #f8f9fa;
+}
+
+.modal table td, .modal table th {
+    padding: 0.75rem;
+    vertical-align: middle;
+}
+
+/* Consistent badge styling */
+.badge.bg-light.text-dark {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+</style>
 </head>
 <body>
+    <!-- Overlay for mobile sidebar -->
+    <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+    
     <!-- Teacher Classes Modal -->
     <div class="modal fade" id="teacherClassesModal" tabindex="-1" aria-labelledby="teacherClassesModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-maroon text-white">
-                    <h5 class="modal-title" id="teacherClassesModalLabel">Classes Handled</h5>
+                    <h5 class="modal-title" id="teacherClassesModalLabel">
+                        <span id="teacherNameDisplay"></span> - Classes
+                    </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Class Code</th>
-                                    <th>Subject</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="teacherClassesTableBody">
-                                <!-- Classes will be populated here -->
-                            </tbody>
-                        </table>
-                    </div>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Class Code</th>
+                                <th>Subject</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teacherClassesTableBody">
+                            <tr>
+                                <td colspan="3" class="text-center">
+                                    <div class="spinner-border text-maroon" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -385,12 +589,14 @@
         </div>
     </div>
 
-    <!-- Class Students Modal -->
-    <div class="modal fade" id="classStudentsModal" tabindex="-1" aria-labelledby="classStudentsModalLabel" aria-hidden="true">
+    <!-- Students List Modal -->
+    <div class="modal fade" id="studentsListModal" tabindex="-1" aria-labelledby="studentsListModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-maroon text-white">
-                    <h5 class="modal-title" id="classStudentsModalLabel">Class Students</h5>
+                    <h5 class="modal-title" id="studentsListModalLabel">
+                        <i class="bi bi-people"></i> <span id="studentsModalTitle"></span>
+                    </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -468,14 +674,15 @@
 
     <!-- Sidebar Navigation -->
     <nav class="sidebar" id="sidebar">
-        <img src="photo/mseuflogo.png" alt="MSEUF Candelaria Logo" class="sidebar-logo">
+        <img src="/images/mseuflogo.png" alt="MSEUF Candelaria Logo" class="sidebar-logo">
         <div class="university-name">MANUEL S. ENVERGA UNIVERSITY FOUNDATION CANDELARIA INC.</div>
         <hr />
         <a href="/html/admin.html" ><i class="fas fa-tachometer-alt mr-2"></i> Dashboard</a>
-    <a href="/html/adminstudent.html" class="active"><i class="fas fa-users mr-2"></i> Students</a>
-    <a href="/html/admint.html" ><i class="fas fa-chalkboard-teacher mr-2"></i> Teachers</a>
+    <a href="/html/adminstudent.html"><i class="fas fa-users mr-2"></i> Students</a>
+    <a href="/html/admint.html"class="active" ><i class="fas fa-chalkboard-teacher mr-2"></i> Teachers</a>
     <a href="/html/adminannouncement.html" ><i class="fas fa-bullhorn mr-2"></i> Announcements</a>
     <a href="/html/adminleaderboard.html" ><i class="fas fa-trophy mr-2"></i> Leaderboards</a>
+    <a href="/html/adminpasswords.html"><i class="fas fa-trophy"></i> Passwords</a>
     <a href="#" onclick="logout();"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
     </nav>
 
@@ -543,150 +750,17 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr data-teacher-id="T001" data-encoding-enabled="false">
-                                    <td>T001</td>
-                                    <td><a href="#" class="teacher-name" onclick="showTeacherClasses('T001', 'Dr. Sarah Johnson')">Dr. Sarah Johnson</a></td>
-                                    <td>Mathematics</td>
-                                    <td>sarah.johnson@school.edu</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-danger encoding-btn me-1" onclick="toggleEncoding(this)" title="Encoding Disabled">
-                                            <i class="bi bi-lock-fill"></i> Disabled
-                                        </button>
-                                        <button class="btn btn-sm btn-secondary"><i class="bi bi-archive"></i> Archive</button>
-                                    </td>
-                                </tr>
-                                <tr data-teacher-id="T002" data-encoding-enabled="false">
-                                    <td>T002</td>
-                                    <td><a href="#" class="teacher-name" onclick="showTeacherClasses('T002', 'Prof. Michael Chen')">Prof. Michael Chen</a></td>
-                                    <td>Computer Science</td>
-                                    <td>michael.chen@school.edu</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-danger encoding-btn me-1" onclick="toggleEncoding(this)" title="Encoding Disabled">
-                                            <i class="bi bi-lock-fill"></i> Disabled
-                                        </button>
-                                        <button class="btn btn-sm btn-secondary"><i class="bi bi-archive"></i> Archive</button>
-                                    </td>
-                                </tr>
-                                <tr data-teacher-id="T003" data-encoding-enabled="false">
-                                    <td>T003</td>
-                                    <td><a href="#" class="teacher-name" onclick="showTeacherClasses('T003', 'Ms. Emily Rodriguez')">Ms. Emily Rodriguez</a></td>
-                                    <td>English Literature</td>
-                                    <td>emily.rodriguez@school.edu</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-danger encoding-btn me-1" onclick="toggleEncoding(this)" title="Encoding Disabled">
-                                            <i class="bi bi-lock-fill"></i> Disabled
-                                        </button>
-                                        <button class="btn btn-sm btn-secondary"><i class="bi bi-archive"></i> Archive</button>
-                                    </td>
-                                </tr>
-                                <tr data-teacher-id="T004" data-encoding-enabled="false">
-                                    <td>T004</td>
-                                    <td><a href="#" class="teacher-name" onclick="showTeacherClasses('T004', 'Dr. Robert Wilson')">Dr. Robert Wilson</a></td>
-                                    <td>Physics</td>
-                                    <td>robert.wilson@school.edu</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-danger encoding-btn me-1" onclick="toggleEncoding(this)" title="Encoding Disabled">
-                                            <i class="bi bi-lock-fill"></i> Disabled
-                                        </button>
-                                        <button class="btn btn-sm btn-secondary"><i class="bi bi-archive"></i> Archive</button>
-                                    </td>
-                                </tr>
-                                <tr data-teacher-id="T005" data-encoding-enabled="false">
-                                    <td>T005</td>
-                                    <td><a href="#" class="teacher-name" onclick="showTeacherClasses('T005', 'Ms. Lisa Thompson')">Ms. Lisa Thompson</a></td>
-                                    <td>Chemistry</td>
-                                    <td>lisa.thompson@school.edu</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-danger encoding-btn me-1" onclick="toggleEncoding(this)" title="Encoding Disabled">
-                                            <i class="bi bi-lock-fill"></i> Disabled
-                                        </button>
-                                        <button class="btn btn-sm btn-secondary"><i class="bi bi-archive"></i> Archive</button>
+                                <!-- Teachers will be populated by JavaScript -->
+                                <tr>
+                                    <td colspan="5" class="text-center">
+                                        <div class="spinner-border text-maroon" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-    <!-- Teacher Classes Modal -->
-    <div class="modal fade" id="teacherClassesModal" tabindex="-1" aria-labelledby="teacherClassesModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-maroon text-white">
-                    <h5 class="modal-title" id="teacherClassesModalLabel">
-                        <span id="teacherNameDisplay"></span> - Classes
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Class Code</th>
-                                <th>Subject</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="teacherClassesTableBody">
-                            <tr>
-                                <td colspan="3" class="text-center">
-                                    <div class="spinner-border text-maroon" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Students List Modal -->
-    <div class="modal fade" id="studentsListModal" tabindex="-1" aria-labelledby="studentsListModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header bg-maroon text-white">
-                    <h5 class="modal-title" id="studentsListModalLabel">
-                        <i class="bi bi-people"></i> <span id="studentsModalTitle"></span>
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3" id="sectionSelectContainer" style="display: none;">
-                        <label for="studentsSectionSelect" class="form-label">Select Section:</label>
-                        <select class="form-select" id="studentsSectionSelect" style="width: auto;">
-                            <option value="">Loading sections...</option>
-                        </select>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Student Name</th>
-                                    <th>Midterm Grade</th>
-                                    <th>Final Grade</th>
-                                </tr>
-                            </thead>
-                            <tbody id="studentsListTableBody">
-                                <tr>
-                                    <td colspan="4" class="text-center">Loading students...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -695,5 +769,26 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/javaScript/admint.js"></script>
+    
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("overlay");
+            sidebar.classList.toggle("active");
+            overlay.classList.toggle("active");
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("overlay");
+            sidebar.classList.remove("active");
+            overlay.classList.remove("active");
+        }
+
+        function logout() {
+            localStorage.removeItem("loggedInUser");
+            window.location.href = "login.html";
+        }
+    </script>
 </body>
 </html>

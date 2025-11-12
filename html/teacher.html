@@ -23,52 +23,71 @@
         }
         
         .sidebar {
-            background: linear-gradient(to bottom, #800000, #4d0000);
-            min-height: 100vh;
-            padding: 20px 0;
-            width: 250px;
-            position: fixed;
-            z-index: 100;
-        }
-        .sidebar a {
-            display: block;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            transition: none;
-        }
-        .sidebar a i {
-            margin-right: 0.5rem;
-            width: 20px;
-            text-align: center;
-        }
-        .sidebar a:hover {
-            background-color: #a00000;
-            color: white !important;
-        }
-        .sidebar a.active {
-            background-color: #a00000;
-        }
-        .university-name {
-            font-size: 14px;
-            line-height: 1.3;
-            padding: 0 15px;
-            text-align: center;
-            margin-bottom: 15px;
-            color: white;
-        }
-        .sidebar-logo {
-            display: block;
-            margin: 0 auto 15px auto;
-            max-width: 80px;
-            max-height: 80px;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            border-radius: 50%;
-            background-color: white;
-            padding: 5px;
-        }
+    background: linear-gradient(to bottom, #800000, #4d0000);
+    min-height: 100vh;
+    padding: 20px 0;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+    font-family: Arial, sans-serif;
+}
+
+.sidebar-logo {
+    display: block;
+    margin: 0 auto 15px;
+    max-width: 80px;
+    max-height: 80px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 50%;
+    background-color: white;
+    padding: 5px;
+}
+
+.university-name {
+    font-size: 14px;
+    line-height: 1.3;
+    padding: 0 20px;
+    text-align: center;
+    margin-bottom: 15px;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-weight: normal;
+}
+
+.sidebar hr {
+    border-color: rgba(255,255,255,0.3);
+    margin: 15px 20px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    padding: 12px 20px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.sidebar a i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.sidebar a:hover {
+    background-color: #a00000;
+    color: white;
+}
+
+.sidebar a.active {
+    background-color: #a00000;
+}
         
         /* Mobile Header */
         .mobile-header {
@@ -215,12 +234,12 @@
             <button class="menu-toggle" onclick="toggleSidebar()">
                 <i class="fas fa-bars"></i>
             </button>
-            <h1 class="header-title">Teacher Dashboard</h1>
+            <h1 class="header-title">Enverga University Candelaria</h1>
         </div>
     </div>
 
     <nav class="sidebar" id="sidebar">
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='white'/%3E%3Ctext x='50' y='45' font-family='Arial' font-size='16' font-weight='bold' fill='%23800000' text-anchor='middle' dy='.3em'%3EMSEUF%3C/text%3E%3Ctext x='50' y='62' font-family='Arial' font-size='8' fill='%23800000' text-anchor='middle'%3ECandelaria%3C/text%3E%3C/svg%3E" alt="MSEUF Candelaria Logo" class="sidebar-logo">
+        <img src="/images/mseuflogo.png" alt="MSEUF Candelaria Logo" class="sidebar-logo">
         <div class="university-name">MANUEL S. ENVERGA UNIVERSITY FOUNDATION CANDELARIA INC.</div>
         <hr style="border-color: rgba(255,255,255,0.3); margin: 10px 15px;" />
         <a href="/html/teacher.html" class="nav-link active"><i class="fas fa-tachometer-alt mr-2"></i> Dashboard</a>

@@ -10,7 +10,7 @@
     <style>
         :root {
             --maroon: #800000;
-            --maroon-hover: #a52a2a;
+            --maroon-hover: #a00000;
         }
 
         body {
@@ -21,62 +21,71 @@
         }
 
         .sidebar {
-            background: linear-gradient(to bottom, #800000, #4d0000);
-            min-height: 100vh;
-            padding: 20px 0;
-            width: 250px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1001;
-        }
+    background: linear-gradient(to bottom, #800000, #4d0000);
+    min-height: 100vh;
+    padding: 20px 0;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+    font-family: Arial, sans-serif;
+}
 
-        .sidebar-logo {
-            display: block;
-            margin: 0 auto 15px;
-            max-width: 80px;
-            max-height: 80px;
-            border-radius: 50%;
-            background-color: white;
-            padding: 5px;
-        }
+.sidebar-logo {
+    display: block;
+    margin: 0 auto 15px;
+    max-width: 80px;
+    max-height: 80px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 50%;
+    background-color: white;
+    padding: 5px;
+}
 
-        .university-name {
-            font-size: 14px;
-            line-height: 1.3;
-            padding: 0 20px;
-            text-align: center;
-            margin-bottom: 15px;
-            color: white;
-        }
+.university-name {
+    font-size: 14px;
+    line-height: 1.3;
+    padding: 0 20px;
+    text-align: center;
+    margin-bottom: 15px;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-weight: normal;
+}
 
-        .sidebar hr {
-            border-color: rgba(255,255,255,0.3);
-            margin: 15px 20px;
-        }
+.sidebar hr {
+    border-color: rgba(255,255,255,0.3);
+    margin: 15px 20px;
+}
 
-        .sidebar a {
-            display: block;
-            color: white;
-            padding: 12px 20px;
-            text-decoration: none;
-            transition: background-color 0.3s;
-        }
+.sidebar a {
+    display: block;
+    color: white;
+    padding: 12px 20px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
 
-        .sidebar a i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-        }
+.sidebar a i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+    font-size: 14px;
+}
 
-        .sidebar a:hover {
-            background-color: var(--maroon-hover);
-            color: white;
-        }
+.sidebar a:hover {
+    background-color: #a00000;
+    color: white;
+}
 
-        .sidebar a.active {
-            background-color: var(--maroon-hover);
-        }
+.sidebar a.active {
+    background-color: #a00000;
+}
 
         .main-content {
             margin-left: 250px;
@@ -89,6 +98,10 @@
             font-weight: bold;
             margin-bottom: 30px;
         }
+
+        .dashboard-title i {
+    color: black !important;
+}
 
         .dashboard-card {
             background-color: white;
@@ -111,7 +124,7 @@
         }
 
         .stat-card:hover {
-            transform: translateY(-2px);
+            transform: none;
         }
 
         .text-maroon {
@@ -127,13 +140,14 @@
             box-shadow: 0 0 0 0.25rem rgba(128, 0, 0, 0.25);
         }
 
+        /* Mobile Header */
         .mobile-header {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(to right, #800000, var(--maroon-hover));
+            background: linear-gradient(to right, #800000, #a52a2a);
             color: white;
             padding: 15px 20px;
             z-index: 999;
@@ -206,12 +220,12 @@
             <button class="menu-toggle" onclick="toggleSidebar()">
                 <i class="fas fa-bars"></i>
             </button>
-            <h1 class="header-title">Admin Dashboard</h1>
+            <h1 class="header-title">Enverga University Candelaria</h1>
         </div>
     </div>
 
     <nav class="sidebar" id="sidebar">
-        <img src="photo/mseuflogo.png" alt="MSEUF Candelaria Logo" class="sidebar-logo">
+        <img src="/images/mseuflogo.png" alt="MSEUF Candelaria Logo" class="sidebar-logo">
         <div class="university-name">MANUEL S. ENVERGA UNIVERSITY FOUNDATION CANDELARIA INC.</div>
         <hr>
         <a href="/html/admin.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
@@ -219,6 +233,7 @@
         <a href="/html/admint.html"><i class="fas fa-chalkboard-teacher"></i> Teachers</a>
         <a href="/html/adminannouncement.html"><i class="fas fa-bullhorn"></i> Announcements</a>
         <a href="/html/adminleaderboard.html"><i class="fas fa-trophy"></i> Leaderboards</a>
+        <a href="/html/adminpasswords.html"><i class="fas fa-trophy"></i> Passwords</a>
         <a href="#" onclick="logout();"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </nav>
 

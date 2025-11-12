@@ -21,64 +21,75 @@
             padding: 0;
         }
         
+        /* Sidebar Styles */
         .sidebar {
-            background: linear-gradient(to bottom, var(--maroon), var(--maroon-dark));
-            min-height: 100vh;
-            padding: 20px 0;
-            width: 250px;
-            position: fixed;
-            left: 0;
-            top: 0;
-            z-index: 1001;
-        }
+    background: linear-gradient(to bottom, #800000, #4d0000);
+    min-height: 100vh;
+    padding: 20px 0;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+    font-family: Arial, sans-serif;
+}
+
+.sidebar-logo {
+    display: block;
+    margin: 0 auto 15px;
+    max-width: 80px;
+    max-height: 80px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 50%;
+    background-color: white;
+    padding: 5px;
+}
+
+.university-name {
+    font-size: 14px;
+    line-height: 1.3;
+    padding: 0 20px;
+    text-align: center;
+    margin-bottom: 15px;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-weight: normal;
+}
+
+.sidebar hr {
+    border-color: rgba(255,255,255,0.3);
+    margin: 15px 20px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    padding: 12px 20px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.sidebar a i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.sidebar a:hover {
+    background-color: #a00000;
+    color: white;
+}
+
+.sidebar a.active {
+    background-color: #a00000;
+}
         
-        .sidebar-logo {
-            display: block;
-            margin: 0 auto 15px;
-            max-width: 80px;
-            max-height: 80px;
-            border-radius: 50%;
-            background-color: white;
-            padding: 5px;
-        }
-        
-        .university-name {
-            font-size: 14px;
-            line-height: 1.3;
-            padding: 0 20px;
-            text-align: center;
-            margin-bottom: 15px;
-            color: white;
-            font-weight: 500;
-        }
-        
-        .sidebar hr {
-            border-color: rgba(255,255,255,0.3);
-            margin: 15px 20px;
-        }
-        
-        .sidebar a {
-            display: block;
-            color: white;
-            padding: 12px 20px;
-            text-decoration: none;
-            transition: background-color 0.3s;
-        }
-        
-        .sidebar a:hover {
-            background-color: var(--maroon-hover);
-        }
-        
-        .sidebar a.active {
-            background-color: var(--maroon-hover);
-            font-weight: bold;
-        }
-        
-        .sidebar a i {
-            margin-right: 10px;
-            width: 20px;
-        }
-        
+        /* Main Content */
         .main-content {
             margin-left: 250px;
             padding: 30px;
@@ -86,19 +97,47 @@
         }
         
         .grades-title {
-            color: var(--maroon);
+            color: black;
             font-weight: bold;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
         
-        .filter-container {
+        /* Dashboard Card - wraps everything */
+        .dashboard-card {
             background-color: white;
             border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 25px;
             margin-bottom: 30px;
         }
         
+        /* Filter styling */
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-label i {
+            color: #800000;
+            font-size: 0.85rem;
+        }
+        
+        .form-select {
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            padding: 0.625rem 0.875rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-select:focus {
+            border-color: #800000;
+            box-shadow: 0 0 0 0.2rem rgba(128, 0, 0, 0.15);
+        }
+
+        /* Button styles */
         .btn-reset {
             background-color: #666;
             color: white;
@@ -112,29 +151,67 @@
             color: white;
         }
         
-        .grades-table-container {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 20px;
-            overflow-x: auto;
-        }
-        
+        /* Table styling - matches studentfinal.html */
         .table {
+            border-color: #ddd !important;
             margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
         }
         
-        .table th {
-            background-color: var(--maroon);
-            color: white;
+        .table th, .table td {
+            border: none !important;
+            text-align: center;
+        }
+        
+        .table thead th {
+            background: linear-gradient(135deg, #800000 0%, #a52a2a 100%) !important;
+            color: white !important;
             font-weight: 600;
-            border: none;
-            padding: 15px 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 12px 10px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+        
+        .table thead th:first-child {
+            border-top-left-radius: 10px;
+        }
+        
+        .table thead th:last-child {
+            border-top-right-radius: 10px;
+        }
+        
+        .table tbody tr:last-child td:first-child {
+            border-bottom-left-radius: 10px;
+        }
+        
+        .table tbody tr:last-child td:last-child {
+            border-bottom-right-radius: 10px;
         }
         
         .table tbody td {
-            padding: 15px 12px;
+            padding: 12px 10px;
             vertical-align: middle;
+            font-size: 0.9rem;
+        }
+        
+        .table tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .table tbody tr:last-child {
+            border-bottom: none;
+        }
+        
+        .table-responsive {
+            border-radius: 10px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            background: white;
+            -webkit-overflow-scrolling: touch;
         }
         
         .subject-code {
@@ -152,6 +229,7 @@
             font-weight: 600;
         }
         
+        /* No Results Message */
         #noResultsMessage {
             display: none;
             text-align: center;
@@ -165,35 +243,35 @@
             color: #ccc;
         }
         
-        .mobile-header {
-            display: none;
-            background-color: var(--maroon);
-            color: white;
-            padding: 15px 20px;
-            align-items: center;
-            justify-content: space-between;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 999;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .mobile-header .menu-toggle {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        
-        .mobile-header .header-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            flex-grow: 1;
-            text-align: center;
-        }
+        /* Mobile Header */
+        /* Mobile Header - Updated to match teacher.html gradient */
+.mobile-header {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to right, #800000, #a52a2a);
+    color: white;
+    padding: 15px 20px;
+    z-index: 999;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.mobile-header .menu-toggle {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.mobile-header .header-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    flex-grow: 1;
+    text-align: center;
+}
         
         .overlay {
             display: none;
@@ -210,6 +288,7 @@
             display: block;
         }
         
+        /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
                 left: -250px;
@@ -232,50 +311,91 @@
             body {
                 padding-top: 60px;
             }
+
+            /* Table adjustments for mobile */
+            .table {
+                font-size: 0.75rem;
+                min-width: 600px;
+            }
+            
+            .table thead th {
+                font-size: 0.7rem;
+                padding: 8px 6px;
+            }
+            
+            .table tbody td {
+                font-size: 0.8rem;
+                padding: 8px 6px;
+            }
+
+            /* Filter adjustments */
+            .form-label {
+                font-size: 0.85rem;
+                margin-bottom: 0.4rem;
+            }
+            
+            .form-label i {
+                font-size: 0.8rem;
+            }
+            
+            .form-select {
+                font-size: 0.9rem;
+                padding: 0.5rem 0.75rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
+    <!-- Mobile Header -->
     <div class="mobile-header">
         <button class="menu-toggle" onclick="toggleSidebar()">
             <i class="fas fa-bars"></i>
         </button>
-        <div class="header-title">My Grades</div>
+        <div class="header-title">Enverga University Candelaria</div>
     </div>
 
+    <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='white'/%3E%3Ctext x='50' y='45' font-family='Arial' font-size='16' font-weight='bold' fill='%23800000' text-anchor='middle' dy='.3em'%3EMSEUF%3C/text%3E%3Ctext x='50' y='62' font-family='Arial' font-size='8' fill='%23800000' text-anchor='middle'%3ECandelaria%3C/text%3E%3C/svg%3E" alt="Logo" class="sidebar-logo">
+        <img src="/images/mseuflogo.png" alt="MSEUF Candelaria Logo" class="sidebar-logo">
         <div class="university-name">
             MANUEL S. ENVERGA<br>
             UNIVERSITY FOUNDATION<br>
             CANDELARIA INC.
         </div>
         <hr>
-        <a href="stud.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-        <a href="mygrades.html"><i class="fas fa-chart-line"></i> My Grades</a>
+        <a href="stud.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="mygrades.html" class="active"><i class="fas fa-chart-line"></i> My Grades</a>
         <a href="announcements.html"><i class="fas fa-bullhorn"></i> Announcements</a>
         <a href="registration.html"><i class="fas fa-file-alt"></i> Registration Form</a>
         <a href="studaccount.html"><i class="fas fa-user"></i> Profile</a>
         <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
 
+    <!-- Main Content -->
     <div class="main-content">
-        <h2 class="grades-title">
-            <i class="fas fa-chart-line me-2"></i>My Grades
-        </h2>
-        
-        <div class="filter-container">
-            <div class="row g-3 align-items-end">
+        <!-- Everything wrapped in dashboard-card -->
+        <div class="dashboard-card">
+            <!-- Title inside the card -->
+            <h2 class="grades-title">
+                <i class="fas fa-chart-line"></i> My Grades
+            </h2>
+            
+            <!-- Filters with icons -->
+            <div class="row g-3 align-items-end mb-3">
                 <div class="col-md-5">
-                    <label for="yearFilter" class="form-label">Filter by Year</label>
+                    <label for="yearFilter" class="form-label">
+                        <i class="fas fa-calendar-alt me-1"></i> Filter by Year
+                    </label>
                     <select class="form-select" id="yearFilter">
                         <option value="">All Years</option>
                     </select>
                 </div>
                 <div class="col-md-5">
-                    <label for="semesterFilter" class="form-label">Filter by Semester</label>
+                    <label for="semesterFilter" class="form-label">
+                        <i class="fas fa-book me-1"></i> Filter by Semester
+                    </label>
                     <select class="form-select" id="semesterFilter">
                         <option value="">All Semesters</option>
                     </select>
@@ -286,30 +406,31 @@
                     </button>
                 </div>
             </div>
-        </div>
 
-        <div class="grades-table-container">
-            <table class="table table-hover" id="gradesTable">
-                <thead>
-                    <tr>
-                        <th>Subject Code</th>
-                        <th>Subject Name</th>
-                        <th>Midterm</th>
-                        <th>Finals</th>
-                        <th>GPA</th>
-                        <th>Remarks</th>
-                    </tr>
-                </thead>
-                <tbody id="gradesTableBody">
-                    <tr>
-                        <td colspan="6" class="text-center text-muted py-5">
-                            <i class="fas fa-spinner fa-spin fa-3x mb-3"></i>
-                            <p>Loading grades...</p>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- Table with proper styling -->
+            <div class="table-responsive">
+                <table class="table table-hover" id="gradesTable">
+                    <thead>
+                        <tr>
+                            <th>Subject Code</th>
+                            <th>Subject Name</th>
+                            <th>Midterm</th>
+                            <th>Finals</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gradesTableBody">
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <i class="fas fa-spinner fa-spin fa-3x mb-3"></i>
+                                <p>Loading grades...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             
+            <!-- No Results Message -->
             <div id="noResultsMessage">
                 <i class="fas fa-inbox"></i>
                 <p>No grades found for the selected filters.</p>

@@ -6,6 +6,7 @@
     <title>Announcements - MSEUF</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     
     <style>
         :root {
@@ -19,65 +20,76 @@
             background-color: #f5f5f5;
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
         }
         
+        /* Sidebar Styles */
         .sidebar {
-            background: linear-gradient(to bottom, var(--maroon), var(--maroon-dark));
-            min-height: 100vh;
-            padding: 20px 0;
-            width: 250px;
-            position: fixed;
-            left: 0;
-            top: 0;
-            z-index: 1001;
-        }
-        
-        .sidebar-logo {
-            display: block;
-            margin: 0 auto 15px;
-            max-width: 80px;
-            max-height: 80px;
-            border-radius: 50%;
-            background-color: white;
-            padding: 5px;
-        }
-        
-        .university-name {
-            font-size: 14px;
-            line-height: 1.3;
-            padding: 0 20px;
-            text-align: center;
-            margin-bottom: 15px;
-            color: white;
-            font-weight: 500;
-        }
-        
-        .sidebar hr {
-            border-color: rgba(255,255,255,0.3);
-            margin: 15px 20px;
-        }
-        
-        .sidebar a {
-            display: block;
-            color: white;
-            padding: 12px 20px;
-            text-decoration: none;
-            transition: background-color 0.3s;
-        }
-        
-        .sidebar a:hover {
-            background-color: var(--maroon-hover);
-        }
-        
-        .sidebar a.active {
-            background-color: var(--maroon-hover);
-            font-weight: bold;
-        }
-        
-        .sidebar a i {
-            margin-right: 10px;
-            width: 20px;
-        }
+    background: linear-gradient(to bottom, #800000, #4d0000);
+    min-height: 100vh;
+    padding: 20px 0;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+    font-family: Arial, sans-serif;
+}
+
+.sidebar-logo {
+    display: block;
+    margin: 0 auto 15px;
+    max-width: 80px;
+    max-height: 80px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 50%;
+    background-color: white;
+    padding: 5px;
+}
+
+.university-name {
+    font-size: 14px;
+    line-height: 1.3;
+    padding: 0 20px;
+    text-align: center;
+    margin-bottom: 15px;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-weight: normal;
+}
+
+.sidebar hr {
+    border-color: rgba(255,255,255,0.3);
+    margin: 15px 20px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    padding: 12px 20px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.sidebar a i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.sidebar a:hover {
+    background-color: #a00000;
+    color: white;
+}
+
+.sidebar a.active {
+    background-color: #a00000;
+}
         
         .main-content {
             margin-left: 250px;
@@ -85,20 +97,131 @@
             min-height: 100vh;
         }
         
-        .announcements-title {
-            color: var(--maroon);
-            font-weight: bold;
-            margin-bottom: 30px;
-        }
-        
-        .filter-container {
+        .dashboard-card {
             background-color: white;
             border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 25px;
             margin-bottom: 30px;
         }
         
+        .grades-title {
+            color: black;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+        
+        /* Announcements Styles - Matching studentfinal.html */
+        .announcements-container {
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 120px);
+            overflow: hidden;
+        }
+        
+        .announcements-header {
+            flex-shrink: 0;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 20px;
+            background-color: white;
+        }
+        
+        .announcements-list-container {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        .announcements-list-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .announcements-list-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .announcements-list-container::-webkit-scrollbar-thumb {
+            background: var(--maroon);
+            border-radius: 10px;
+        }
+        
+        .announcements-list-container::-webkit-scrollbar-thumb:hover {
+            background: #a52a2a;
+        }
+        
+        .announcement-item {
+            border-left: 4px solid var(--maroon);
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        
+        .announcement-item:hover {
+            background-color: rgba(128, 0, 0, 0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+        
+        .announcement-item h5 {
+            color: var(--maroon);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .announcement-item .badge {
+            font-size: 0.75rem;
+            padding: 0.35em 0.65em;
+        }
+        
+        .announcement-item p {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .announcement-preview {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .announcement-full-content {
+            display: none;
+        }
+        
+        /* Filter styling - Matching studentfinal.html */
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-label i {
+            color: #800000;
+            font-size: 0.85rem;
+        }
+        
+        .form-select {
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            padding: 0.625rem 0.875rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-select:focus {
+            border-color: #800000;
+            box-shadow: 0 0 0 0.2rem rgba(128, 0, 0, 0.15);
+        }
+
+        /* Button styles */
         .btn-reset {
             background-color: #666;
             color: white;
@@ -110,70 +233,38 @@
             color: white;
         }
         
-        .announcements-list-container {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 20px;
-            max-height: 600px;
-            overflow-y: auto;
-        }
-        
-        .announcement-item {
-            cursor: pointer;
-            transition: all 0.3s;
-            border-left: 4px solid transparent;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-        }
-        
-        .announcement-item:hover {
-            background-color: #f8f9fa;
-            border-left-color: var(--maroon);
-        }
-        
-        .announcement-preview {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
-        
         .text-maroon {
             color: var(--maroon);
         }
         
-        .mobile-header {
-            display: none;
-            background-color: var(--maroon);
-            color: white;
-            padding: 15px 20px;
-            align-items: center;
-            justify-content: space-between;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 999;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .mobile-header .menu-toggle {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        
-        .mobile-header .header-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            flex-grow: 1;
-            text-align: center;
-        }
+        /* Mobile Header - Updated to match teacher.html gradient */
+.mobile-header {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to right, #800000, #a52a2a);
+    color: white;
+    padding: 15px 20px;
+    z-index: 999;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.mobile-header .menu-toggle {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.mobile-header .header-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    flex-grow: 1;
+    text-align: center;
+}
         
         .overlay {
             display: none;
@@ -188,6 +279,100 @@
         
         .overlay.active {
             display: block;
+        }
+        
+        /* Modal Styles - Matching studentfinal.html with consistent sizing */
+#viewAnnouncementModal .modal-header {
+    background: linear-gradient(45deg, var(--maroon), #a52a2a);
+    flex-shrink: 0;
+    border-bottom: none;
+    padding: 1.25rem 1.5rem;
+}
+
+#viewAnnouncementModal .modal-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    max-height: 80vh;
+    width: 90%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+}
+
+#viewAnnouncementModal .modal-content {
+    max-height: 80vh;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#viewAnnouncementModal .modal-announcement-info {
+    padding: 15px 25px;
+    background-color: #fff;
+    border-bottom: 1px solid #dee2e6;
+    flex-shrink: 0;
+}
+
+#viewAnnouncementModal .modal-announcement-info hr {
+    margin: 0;
+}
+
+#viewAnnouncementModal .modal-body {
+    padding: 25px;
+    font-size: 1rem;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}
+
+#viewAnnouncementModal .modal-footer {
+    flex-shrink: 0;
+    border-top: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+}
+
+#modalAnnouncementContent {
+    color: #333;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+    #viewAnnouncementModal .modal-dialog {
+        width: 95%;
+        max-width: 95%;
+        height: 90vh;
+        max-height: 90vh;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    
+    #viewAnnouncementModal .modal-content {
+        height: 90vh;
+        max-height: 90vh;
+    }
+    
+    #viewAnnouncementModal .modal-announcement-info {
+        padding: 12px 15px;
+    }
+    
+    #viewAnnouncementModal .modal-body {
+        padding: 15px;
+    }
+}
+        
+        #viewAnnouncementModal .modal-footer {
+            flex-shrink: 0;
+        }
+        
+        #modalAnnouncementContent {
+            color: #333;
+            line-height: 1.8;
         }
         
         @media (max-width: 768px) {
@@ -212,6 +397,32 @@
             body {
                 padding-top: 60px;
             }
+            
+            /* Announcements Mobile Styles */
+            .announcements-container {
+                max-height: calc(100vh - 100px);
+            }
+            
+            .announcements-header {
+                padding-bottom: 10px;
+            }
+            
+            /* Modal Mobile Styles */
+            #viewAnnouncementModal .modal-dialog {
+                width: 95%;
+                max-width: 95%;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+            
+            #viewAnnouncementModal .modal-announcement-info {
+                padding: 15px;
+            }
+            
+            #viewAnnouncementModal .modal-body {
+                padding: 15px;
+            }
         }
     </style>
 </head>
@@ -222,68 +433,99 @@
         <button class="menu-toggle" onclick="toggleSidebar()">
             <i class="fas fa-bars"></i>
         </button>
-        <div class="header-title">Announcements</div>
+        <div class="header-title">Enverga University Candelaria</div>
     </div>
 
     <div class="sidebar" id="sidebar">
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='white'/%3E%3Ctext x='50' y='45' font-family='Arial' font-size='16' font-weight='bold' fill='%23800000' text-anchor='middle' dy='.3em'%3EMSEUF%3C/text%3E%3Ctext x='50' y='62' font-family='Arial' font-size='8' fill='%23800000' text-anchor='middle'%3ECandelaria%3C/text%3E%3C/svg%3E" alt="Logo" class="sidebar-logo">
+        <img src="/images/mseuflogo.png" alt="MSEUF Candelaria Logo" class="sidebar-logo">
         <div class="university-name">
             MANUEL S. ENVERGA<br>
             UNIVERSITY FOUNDATION<br>
             CANDELARIA INC.
         </div>
         <hr>
-        <a href="stud.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="stud.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
         <a href="mygrades.html"><i class="fas fa-chart-line"></i> My Grades</a>
-        <a href="announcements.html"><i class="fas fa-bullhorn"></i> Announcements</a>
+        <a href="announcements.html" class="active"><i class="fas fa-bullhorn"></i> Announcements</a>
         <a href="registration.html"><i class="fas fa-file-alt"></i> Registration Form</a>
         <a href="studaccount.html"><i class="fas fa-user"></i> Profile</a>
         <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
 
     <div class="main-content">
-        <h2 class="announcements-title">
-            <i class="fas fa-bullhorn"></i> Announcements
-        </h2>
-        
-        <div class="filter-container">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">Filter by Category</label>
-                    <select class="form-select" id="categoryFilter" onchange="filterAnnouncements()">
-                        <option value="">All Categories</option>
-                        <option value="General">General</option>
-                        <option value="Academic">Academic</option>
-                        <option value="Event">Event</option>
-                        <option value="Holiday">Holiday</option>
-                    </select>
-                </div>
-                <div class="col-md-6 d-flex align-items-end">
-                    <button class="btn btn-reset w-100" onclick="resetFilters()">
-                        <i class="fas fa-redo me-2"></i>Reset Filter
-                    </button>
+        <!-- Announcements Content - Matching studentfinal.html design -->
+        <div class="dashboard-card announcements-container">
+            <!-- Fixed Header Section -->
+            <div class="announcements-header">
+                <h2 class="grades-title"><i class="fas fa-bullhorn"></i> Announcements</h2>
+
+                <!-- Filter Section -->
+                <div class="row mb-3 g-3">
+                    <div class="col-md-6 col-12">
+                        <label class="form-label">
+                            <i class="fas fa-tag me-1"></i> Filter by Category
+                        </label>
+                        <select class="form-select" id="categoryFilter">
+                            <option value="">All Categories</option>
+                            <option value="General">General</option>
+                            <option value="Academic">Academic</option>
+                            <option value="Event">Event</option>
+                            <option value="Holiday">Holiday</option>
+                            <option value="Important">Important</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 col-12 d-flex align-items-end">
+                        <button class="btn btn-reset w-100" id="resetAnnouncementFilter">
+                            <i class="fas fa-redo me-1"></i> Reset Filter
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="announcements-list-container">
-            <div class="list-group" id="announcementsContainer">
-                <div class="text-center text-muted py-5">
-                    <i class="fas fa-spinner fa-spin fa-3x mb-3"></i>
-                    <p>Loading announcements...</p>
+            <!-- Scrollable Announcements List -->
+            <div class="announcements-list-container">
+                <div class="list-group" id="announcementsContainer">
+                    <div class="text-center text-muted py-5">
+                        <i class="fas fa-spinner fa-spin fa-3x mb-3"></i>
+                        <p>Loading announcements...</p>
+                    </div>
+                </div>
+
+                <!-- No Results Message (Hidden by default) -->
+                <div id="noAnnouncementsMessage" class="text-center py-5" style="display: none;">
+                    <i class="fas fa-bullhorn fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No announcements found matching your search.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
+    <!-- View Announcement Modal - Matching studentfinal.html -->
+    <div class="modal fade" id="viewAnnouncementModal" tabindex="-1" aria-labelledby="viewAnnouncementModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="announcementModalLabel">Announcement</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header bg-maroon text-white">
+                    <h5 class="modal-title" id="viewAnnouncementModalLabel">
+                        <i class="fas fa-bullhorn me-2"></i>
+                        <span id="modalAnnouncementTitle">Announcement</span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="announcementModalBody">
+                <!-- Fixed announcement info (not scrollable) -->
+                <div class="modal-announcement-info">
+                    <div class="mb-2">
+                        <span id="modalAnnouncementCategory" class="badge bg-primary">Category</span>
+                        <small class="text-muted ms-3" id="modalAnnouncementDate">
+                            <i class="fas fa-clock"></i> Posted date
+                        </small>
+                    </div>
+                    <hr class="my-2">
+                </div>
+                <!-- Scrollable content area -->
+                <div class="modal-body">
+                    <div id="modalAnnouncementContent" style="white-space: pre-line; line-height: 1.8; font-size: 1rem;">
+                        Announcement content will be displayed here...
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
