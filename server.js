@@ -13,10 +13,10 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "schoolportal_db",
+  host: "153.92.15.6",
+  user: "u579076463_eucportal",
+  password: "Mseufciportalcollege_@2025",
+  database: "u579076463_eucportal_db",
 });
 
 db.connect((err) => {
@@ -489,7 +489,7 @@ app.get("/student/email/:student_id", (req, res) => {
   });
 });
 
-app.put("/api/change-password-student", (req, res) => {
+app.put("/api/change-password-student", async (req, res) => {
   const { studentId, oldPassword, newPassword } = req.body;
 
   if (!studentId || !oldPassword || !newPassword) {
@@ -505,7 +505,7 @@ app.put("/api/change-password-student", (req, res) => {
     WHERE student_id = ?
   `;
 
-  db.query(verifyQuery, [studentId], (err, results) => {
+  db.query(verifyQuery, [studentId], async (err, results) => {
     if (err) {
       return res.status(500).json({ 
         success: false, 
@@ -521,21 +521,25 @@ app.put("/api/change-password-student", (req, res) => {
     }
 
     const account = results[0];
+    const isMatch = await bcrypt.compare(oldPassword, account.password_hash);
 
-    if (account.password_hash !== oldPassword) {
+    if (!isMatch) {
       return res.status(401).json({ 
         success: false, 
         message: "Current password is incorrect" 
       });
     }
 
+    const hashedNewPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    
+    // Update both password_hash and plain_password
     const updateQuery = `
       UPDATE accounts 
-      SET password_hash = ? 
+      SET password_hash = ?, plain_password = ? 
       WHERE account_id = ?
     `;
 
-    db.query(updateQuery, [newPassword, account.account_id], (err, result) => {
+    db.query(updateQuery, [hashedNewPassword, newPassword, account.account_id], (err, result) => {
       if (err) {
         return res.status(500).json({ 
           success: false, 
@@ -1807,8 +1811,6 @@ app.get("/student/grades/:student_id", (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-});
 app.put("/api/change-password-teacher", async (req, res) => {
   const { teacherUserId, oldPassword, newPassword } = req.body;
 
@@ -1852,13 +1854,15 @@ app.put("/api/change-password-teacher", async (req, res) => {
     }
 
     const hashedNewPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    
+    // Update both password_hash and plain_password
     const updateQuery = `
       UPDATE teacher_accounts 
-      SET password_hash = ? 
+      SET password_hash = ?, plain_password = ? 
       WHERE account_id = ?
     `;
 
-    db.query(updateQuery, [hashedNewPassword, account.account_id], (err, result) => {
+    db.query(updateQuery, [hashedNewPassword, newPassword, account.account_id], (err, result) => {
       if (err) {
         return res.status(500).json({ 
           success: false, 
@@ -1956,6 +1960,61 @@ app.post("/api/hash-password", async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
   res.json({ success: true, hashedPassword });
 });
+
+app.get("/admin/passwords", (req, res) => {
+  const studentQuery = `
+    SELECT 
+      a.student_id as id,
+      CONCAT(s.first_name, ' ', s.middle_name, '. ', s.last_name) AS full_name,
+      c.course_name AS department,
+      'student' as user_type,
+      a.plain_password as password
+    FROM accounts a
+    JOIN students s ON a.studentUser_id = s.studentUser_id
+    JOIN courses c ON s.course_id = c.course_id
+    ORDER BY s.last_name, s.first_name
+  `;
+
+  const teacherQuery = `
+    SELECT 
+      t.teacherUser_id as id,
+      CONCAT(t.first_name, ' ', t.middle_name, '. ', t.last_name) AS full_name,
+      d.department_name AS department,
+      'teacher' as user_type,
+      ta.plain_password as password
+    FROM teachers t
+    LEFT JOIN departments d ON t.department_id = d.department_id
+    LEFT JOIN teacher_accounts ta ON t.teacher_id = ta.teacher_id
+    ORDER BY t.last_name, t.first_name
+  `;
+
+  // Get student passwords
+  db.query(studentQuery, (err, studentResults) => {
+    if (err) {
+      return res.status(500).json({ 
+        success: false, 
+        message: "Failed to fetch student passwords",
+        error: err.message 
+      });
+    }
+
+    // Get teacher passwords
+    db.query(teacherQuery, (err, teacherResults) => {
+      if (err) {
+        return res.status(500).json({ 
+          success: false, 
+          message: "Failed to fetch teacher passwords",
+          error: err.message 
+        });
+      }
+
+      // Combine both results
+      const allUsers = [...studentResults, ...teacherResults];
+      res.json(allUsers);
+    });
+  });
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
